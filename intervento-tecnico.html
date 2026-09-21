@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Intervento tecnico | INCATEC SRL</title>
+
+    <style>
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            color: #111111;
+            background: #ffffff;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+
+        /* =========================================================
+           VARIABILI
+        ========================================================= */
+
+        :root {
+            --inca-red: #c61722;
+            --red: #e30613;
+            --red-dark: #b8000c;
+            --black: #111111;
+            --grey: #5f5f5f;
+            --dark-grey: #3b3b3b;
+            --line: #dedede;
+        }
+
+
+        /* =========================================================
+           SCHERMATA INIZIALE
+        ========================================================= */
+
+        body:not(.scene-settled) {
+            background: #3b3b3b;
+        }
+
+        body:not(.content-revealed) {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+
+        /* ==================================================
+   HEADER
+================================================== */
+
+header{
+  height:90px;
+  padding:0 1.5%;
+  background:rgba(255,255,255,.98);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:5000;
+  border-bottom:1px solid #e8e8e8;
+  box-shadow:0 5px 20px rgba(0,0,0,.04);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+.brand-logos{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  height:86px;
+}
+
+.brand-logos img{
+  display:block;
+  width:auto;
+  object-fit:contain;
+  max-height:86px;
+}
+
+.brand-logos img:first-child{
+  height:86px;
+  max-width:250px;
+}
+
+.brand-logos img:last-child{
+  height:78px;
+  max-width:220px;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:38px;
+}
+
+nav>a,
+.menu-label{
+  position:relative;
+  text-decoration:none;
+  color:#111;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:font-weight .15s ease;
+}
+
+nav>a:hover,
+.menu-item:hover>.menu-label{
+  font-weight:700;
+}
+
+nav>a::after,
+.menu-label::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-8px;
+  width:100%;
+  height:2px;
+  background:var(--inca-red);
+  transform:scaleX(0);
+  transform-origin:right;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+
+nav>a:hover::after,
+.menu-item:hover>.menu-label::after{
+  transform:scaleX(1);
+  transform-origin:left;
+}
+
+.menu-item{
+  position:relative;
+  height:90px;
+  display:flex;
+  align-items:center;
+}
+
+
+/* ==================================================
+   DROPDOWN
+================================================== */
+
+.dropdown{
+  position:absolute;
+  top:calc(100% - 1px);
+  left:50%;
+  transform:translateX(-50%);
+  width:285px;
+  background:#fff;
+  padding:8px 0;
+  border:0;
+  border-top:2px solid var(--inca-red);
+  border-radius:0;
+  box-shadow:0 18px 40px rgba(0,0,0,.10);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .15s ease,visibility .15s ease;
+  z-index:6000;
+}
+
+.menu-item:hover .dropdown{
+  opacity:1;
+  visibility:visible;
+}
+
+.dropdown a{
+  display:block;
+  padding:12px 24px;
+  text-decoration:none;
+  color:#111;
+  background:#fff;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.07em;
+  transition:font-weight .15s ease;
+}
+
+.dropdown a:hover{
+  color:#111;
+  background:#fff;
+  font-weight:700;
+}
+
+
+/* =========================================================
+           HEADER DURANTE LA SCENA INIZIALE
+           La barra viene mostrata solo al termine della scena.
+           La grafica del riferimento viene mantenuta senza modifiche.
+        ========================================================= */
+        body:not(.scene-settled) header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        body.scene-settled header {
+            position: sticky;
+            top: 0;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+
+/* =========================================================
+           SCENA INIZIALE
+           DURATA COMPLESSIVA: 2 SECONDI
+        ========================================================= */
+
+        .pagina {
+            position: relative;
+
+            height: 100vh;
+            min-height: 650px;
+
+            overflow: hidden;
+            isolation: isolate;
+
+            background: #ffffff;
+        }
+
+        body.scene-settled .pagina {
+            height: calc(100vh - 90px);
+        }
+
+        .scene-backdrop {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+
+            background: #3b3b3b;
+
+            clip-path: inset(0 0 0 0);
+
+            transition:
+                clip-path .9s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .pagina.is-settled .scene-backdrop {
+            clip-path: inset(0);
+        }
+
+
+        /* =========================================================
+           RUOTA
+           TUTTO PORTATO DA 3s A 2s
+        ========================================================= */
+
+        #gearStage {
+            position: absolute;
+            inset: 0;
+
+            z-index: 2;
+
+            overflow: hidden;
+        }
+
+        .gear-position {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            width: min(650px, 72vw);
+            aspect-ratio: 1 / 1;
+
+            transform: translate(-50%, -50%);
+
+            will-change: transform, left;
+
+            animation:
+                moveToRight
+                2s
+                linear
+                0s
+                forwards;
+        }
+
+        .gear-scale {
+            width: 100%;
+            height: 100%;
+
+            transform-origin: center center;
+
+            opacity: 0;
+
+            will-change: transform, opacity;
+
+            animation:
+                gearAppear
+                2s
+                linear
+                0s
+                forwards;
+        }
+
+        .gear-rotation {
+            width: 100%;
+            height: 100%;
+
+            transform-origin: center center;
+
+            will-change: transform;
+
+            animation:
+                gearRotate
+                2s
+                linear
+                0s
+                forwards;
+        }
+
+        .gear-svg {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: visible;
+        }
+
+        .gear-shape {
+            fill: var(--red);
+        }
+
+
+        /* =========================================================
+           COMPARSA + RIMPICCIOLIMENTO
+        ========================================================= */
+
+        @keyframes gearAppear {
+
+            0% {
+                opacity: 0;
+                transform: scale(1.30);
+            }
+
+            12% {
+                opacity: 1;
+                transform: scale(1.30);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
+        /* =========================================================
+           ROTAZIONE
+           DURATA: 2 SECONDI
+        ========================================================= */
+
+        @keyframes gearRotate {
+
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        /* =========================================================
+           MOVIMENTO VERSO DESTRA
+           DURATA: 2 SECONDI
+        ========================================================= */
+
+        @keyframes moveToRight {
+
+            0% {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            100% {
+                left: 100%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+
+        /* =========================================================
+           EFFETTO DI IMPATTO
+        ========================================================= */
+
+        .gear-position::after {
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            width: 82%;
+            height: 82%;
+
+            border-radius: 50%;
+
+            border: 2px solid rgba(227, 6, 19, .18);
+
+            transform:
+                translate(-50%, -50%)
+                scale(.55);
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            animation:
+                impact
+                .6s
+                ease-out
+                1.15s
+                forwards;
+        }
+
+        @keyframes impact {
+
+            0% {
+                opacity: .55;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(.55);
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.15);
+            }
+        }
+
+
+        /* =========================================================
+           TITOLO
+        ========================================================= */
+
+        .technical-title {
+            position: absolute;
+
+            top: 50%;
+            left: clamp(30px, 5vw, 100px);
+
+            z-index: 5;
+
+            width: min(65%, 900px);
+
+            color: var(--red);
+
+            font-size: clamp(50px, 7vw, 125px);
+
+            font-weight: 700;
+
+            line-height: .88;
+
+            letter-spacing: -.075em;
+
+            text-transform: uppercase;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            clip-path: inset(0 100% 0 0);
+
+            transform:
+                translateY(calc(-50% + 18px))
+                scale(.975);
+
+            will-change:
+                clip-path,
+                opacity,
+                transform;
+        }
+
+        .technical-title.show {
+            animation:
+                title-reveal
+                .45s
+                cubic-bezier(.16, 1, .3, 1)
+                forwards;
+        }
+
+        @keyframes title-reveal {
+
+            from {
+                opacity: 0;
+
+                clip-path:
+                    inset(0 100% 0 0);
+
+                transform:
+                    translateY(calc(-50% + 18px))
+                    scale(.975);
+            }
+
+            to {
+                opacity: 1;
+
+                clip-path:
+                    inset(0 0 0 0);
+
+                transform:
+                    translateY(-50%)
+                    scale(1);
+            }
+        }
+
+
+        /* =========================================================
+           CONTENUTO
+        ========================================================= */
+
+        .post-animation {
+            opacity: 0;
+
+            transform: translateY(42px);
+
+            pointer-events: none;
+
+            transition:
+                opacity .45s ease,
+                transform .45s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        body.content-revealed .post-animation {
+            opacity: 1;
+
+            transform: translateY(0);
+
+            pointer-events: auto;
+        }
+
+
+        /* =========================================================
+           SEZIONE TECNICA
+        ========================================================= */
+
+        .inca-technical {
+            --inca-red: #c61722;
+            --inca-black: #111111;
+            --inca-grey: #5f5f5f;
+            --inca-line: #dedede;
+
+            color: var(--inca-black);
+            background: #ffffff;
+
+            padding: 0 0 125px;
+        }
+
+        .inca-technical *,
+        .inca-technical *::before,
+        .inca-technical *::after {
+            box-sizing: border-box;
+        }
+
+        .inca-technical__container {
+            width: min(1320px, calc(100% - 100px));
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           INTRO
+        ========================================================= */
+
+        .inca-technical__intro {
+            padding: 125px 0 65px;
+        }
+
+        .inca-technical__intro-text {
+            width: min(930px, 100%);
+        }
+
+        .inca-technical__intro-text p {
+            font-size: clamp(30px, 3.5vw, 50px);
+            line-height: 1.1;
+            letter-spacing: -.055em;
+            font-weight: 400;
+        }
+
+        .inca-technical__intro-text strong {
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           SPAZIO IMMAGINE 1
+        ========================================================= */
+
+        .technical-visual {
+            position: relative;
+
+            width: 100%;
+
+            height: min(670px, 50vw);
+
+            min-height: 460px;
+
+            overflow: hidden;
+
+            background: #f1f1f1;
+        }
+
+
+        /* =========================================================
+           DESCRIZIONE
+        ========================================================= */
+
+        .inca-technical__description {
+            display: grid;
+
+            grid-template-columns: .8fr 1.2fr;
+
+            gap: 100px;
+
+            padding: 120px 0 110px;
+
+            align-items: center;
+        }
+
+        .inca-technical__description-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .technical-description-photo {
+            position: relative;
+            width: 100%;
+            height: 430px;
+            overflow: hidden;
+            background: #f1f1f1;
+        }
+
+        .technical-description-photo img,
+        .technical-visual img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .inca-technical__description-title {
+            margin: 0 0 42px;
+
+            max-width: 760px;
+
+            font-size: clamp(40px, 4.5vw, 62px);
+
+            font-weight: 400;
+
+            line-height: .98;
+
+            letter-spacing: -.065em;
+        }
+
+        .inca-technical__description-title strong {
+            font-weight: 700;
+        }
+
+        .inca-technical__description-copy {
+            max-width: 760px;
+            padding-top: 0;
+        }
+
+        .inca-technical__description-copy p {
+            margin: 0 0 25px;
+
+            color: var(--inca-grey);
+
+            font-size: 16px;
+
+            line-height: 1.85;
+
+            font-weight: 300;
+        }
+
+        .inca-technical__description-copy p:last-child {
+            margin-bottom: 0;
+        }
+
+
+        /* =========================================================
+           HIGHLIGHT
+        ========================================================= */
+
+        .inca-technical__highlight {
+            position: relative;
+
+            margin-top: 40px;
+
+            padding: 23px 0 23px 22px;
+
+            border-top: 1px solid var(--inca-line);
+
+            border-bottom: 1px solid var(--inca-line);
+        }
+
+        .inca-technical__highlight::before {
+            position: absolute;
+
+            top: 23px;
+            bottom: 23px;
+            left: 0;
+
+            width: 3px;
+
+            content: "";
+
+            background: var(--inca-red);
+        }
+
+        .inca-technical__highlight p {
+            margin: 0;
+
+            color: var(--inca-black);
+
+            font-size: 15px;
+
+            line-height: 1.65;
+
+            font-weight: 500;
+        }
+
+
+        /* =========================================================
+           SCHEDE
+        ========================================================= */
+
+        .technical-specifications {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            border-top: 1px solid var(--inca-line);
+            border-bottom: 1px solid var(--inca-line);
+        }
+
+        .technical-specification {
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            min-height: 270px;
+
+            padding: 40px;
+
+            border-right: 1px solid var(--inca-line);
+
+            transition:
+                background .35s ease,
+                color .35s ease;
+        }
+
+        .technical-specification:last-child {
+            border-right: 0;
+        }
+
+        .technical-specification:hover {
+            color: #ffffff;
+            background: var(--inca-black);
+        }
+
+        .technical-specification-label {
+            margin-bottom: 25px;
+
+            color: var(--inca-grey);
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: .14em;
+        }
+
+        .technical-specification:hover
+        .technical-specification-label {
+            color: #a8a8a8;
+        }
+
+        .technical-specification-value {
+            font-size: clamp(30px, 3vw, 48px);
+
+            line-height: .98;
+
+            letter-spacing: -.055em;
+
+            font-weight: 500;
+        }
+
+
+        /* =========================================================
+           VANTAGGI
+        ========================================================= */
+
+        .technical-advantages-section {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 90px;
+
+            padding: 125px 0;
+        }
+
+        .technical-detail {
+            position: relative;
+
+            height: 600px;
+
+            overflow: hidden;
+
+            background: #f1f1f1;
+        }
+
+        .technical-advantages {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .technical-advantages-title {
+            margin-bottom: 45px;
+
+            font-size: clamp(40px, 4vw, 58px);
+
+            font-weight: 400;
+
+            line-height: .98;
+
+            letter-spacing: -.065em;
+        }
+
+        .technical-advantages-title strong {
+            font-weight: 700;
+        }
+
+        .technical-advantage {
+            padding: 23px 0;
+
+            border-top: 1px solid var(--inca-line);
+        }
+
+        .technical-advantage:last-child {
+            border-bottom: 1px solid var(--inca-line);
+        }
+
+        .technical-advantage h3 {
+            margin: 0 0 7px;
+
+            font-size: 18px;
+
+            line-height: 1.3;
+
+            font-weight: 600;
+
+            letter-spacing: -.02em;
+        }
+
+        .technical-advantage p {
+            max-width: 560px;
+
+            margin: 0;
+
+            color: var(--inca-grey);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            font-weight: 300;
+        }
+
+
+        /* =========================================================
+           INTERVENTI
+        ========================================================= */
+
+        .technical-applications {
+            padding-bottom: 125px;
+        }
+
+        .technical-applications-header {
+            display: grid;
+
+            grid-template-columns: .8fr 1.2fr;
+
+            gap: 100px;
+
+            padding-bottom: 50px;
+
+            border-bottom: 1px solid var(--inca-line);
+        }
+
+        .technical-applications-header h2 {
+            margin: 0;
+
+            font-size: clamp(40px, 5vw, 64px);
+
+            line-height: .98;
+
+            letter-spacing: -.065em;
+
+            font-weight: 400;
+        }
+
+        .technical-applications-header h2 strong {
+            font-weight: 700;
+        }
+
+        .technical-applications-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .technical-application {
+            min-height: 230px;
+
+            padding: 34px 40px;
+
+            border-right: 1px solid var(--inca-line);
+
+            border-bottom: 1px solid var(--inca-line);
+
+            transition:
+                background .35s ease,
+                color .35s ease;
+        }
+
+        .technical-application:nth-child(2n) {
+            border-right: 0;
+        }
+
+        .technical-application:hover {
+            color: #ffffff;
+
+            background: var(--inca-black);
+        }
+
+        .technical-application h3 {
+            margin: 0 0 14px;
+
+            font-size: 23px;
+
+            line-height: 1.1;
+
+            letter-spacing: -.04em;
+        }
+
+        .technical-application p {
+            max-width: 470px;
+
+            margin: 0;
+
+            color: var(--inca-grey);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        .technical-application:hover p {
+            color: #cccccc;
+        }
+
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .footer {
+            width: 100%;
+
+            min-height: 285px;
+
+            margin-top: 10px;
+
+            padding: 48px 5% 42px;
+
+            display: flex;
+
+            align-items: center;
+
+            background: #3a3a3a;
+
+            color: #ffffff;
+        }
+
+        .footer-inner {
+            display: grid;
+
+            grid-template-columns: 260px 1.5fr 1fr 1fr;
+
+            gap: 55px;
+
+            width: 100%;
+
+            align-items: start;
+        }
+
+        .footer-logos {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 18px;
+        }
+
+        .footer-logos img {
+            display: block;
+
+            width: auto;
+
+            object-fit: contain;
+
+            padding: 5px;
+
+            border-radius: 3px;
+
+            background: #ffffff;
+        }
+
+        .footer-logos img:first-child {
+            height: 78px;
+
+            max-width: 220px;
+        }
+
+        .footer-logos img:last-child {
+            height: 68px;
+
+            max-width: 200px;
+        }
+
+        .footer h3 {
+            margin-bottom: 18px;
+
+            color: #d0d0d0;
+
+            font-size: 24px;
+
+            font-weight: 500;
+
+            line-height: 1;
+        }
+
+        .footer-column,
+        .footer-column p,
+        .footer-column a {
+            color: #d0d0d0;
+
+            font-size: 14px;
+
+            font-weight: 400;
+
+            line-height: 1.55;
+        }
+
+        .footer-column p {
+            margin-bottom: 7px;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+        }
+
+        .footer-column a:hover {
+            color: #ffffff;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+            .pagina {
+                height: 100vh;
+                min-height: 600px;
+            }
+
+            body.scene-settled .pagina {
+                height: calc(100vh - 70px);
+            }
+
+            .gear-position {
+                width: min(580px, 78vw);
+            }
+
+            .technical-title {
+                width: 75%;
+                font-size: clamp(45px, 10vw, 75px);
+            }
+
+            .inca-technical {
+                padding-bottom: 75px;
+            }
+
+            .inca-technical__container {
+                width: min(100% - 40px, 680px);
+            }
+
+            .inca-technical__intro {
+                padding: 75px 0 45px;
+            }
+
+            .technical-visual {
+                min-height: 310px;
+                height: 58vw;
+            }
+
+            .inca-technical__description,
+            .technical-advantages-section,
+            .technical-applications-header {
+                grid-template-columns: 1fr;
+                gap: 42px;
+            }
+
+            .inca-technical__description {
+                padding: 75px 0;
+            }
+
+            .inca-technical__description-copy {
+                padding-top: 0;
+            }
+
+            .technical-specifications {
+                grid-template-columns: 1fr;
+            }
+
+            .technical-specification {
+                min-height: 185px;
+
+                border-right: 0;
+
+                border-bottom: 1px solid var(--inca-line);
+            }
+
+            .technical-specification:last-child {
+                border-bottom: 0;
+            }
+
+            .technical-advantages-section {
+                padding: 75px 0;
+            }
+
+            .technical-detail {
+                height: 430px;
+            }
+
+            .technical-applications {
+                padding-bottom: 75px;
+            }
+
+            .technical-applications-header {
+                padding-bottom: 35px;
+            }
+
+            .technical-applications-header > div:first-child {
+                display: none;
+            }
+
+            .technical-application {
+                min-height: 185px;
+                padding: 30px;
+            }
+
+            .footer {
+                min-height: auto;
+                padding: 40px 25px 35px;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-logos {
+                flex-direction: row;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .footer-logos img:first-child {
+                height: 60px;
+                max-width: 150px;
+            }
+
+            .footer-logos img:last-child {
+                height: 54px;
+                max-width: 135px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .gear-position {
+                width: 90vw;
+            }
+
+            .technical-title {
+                left: 25px;
+
+                width: 80%;
+
+                font-size: clamp(40px, 11vw, 64px);
+            }
+
+            .technical-applications-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .technical-application {
+                border-right: 0;
+            }
+        }
+
+
+        /* =========================================================
+           ACCESSIBILITÀ
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .gear-position,
+            .gear-scale,
+            .gear-rotation,
+            .gear-position::after,
+            .technical-title {
+                animation: none !important;
+            }
+
+            .gear-position {
+                left: 100%;
+
+                transform:
+                    translate(-50%, -50%);
+            }
+
+            .gear-scale {
+                opacity: 1;
+
+                transform: scale(1);
+            }
+
+            .gear-rotation {
+                transform: rotate(0deg);
+            }
+
+            .technical-title {
+                opacity: 1;
+
+                clip-path: none;
+
+                transform:
+                    translateY(-50%);
+            }
+        }
+
+    
+        @media (max-width:900px){
+          header{
+            min-height:70px;
+            height:70px;
+          }
+          .menu-item{
+            height:70px;
+          }
+        }
+
+        @media (max-width:600px){
+          header{
+            height:70px;
+            min-height:70px;
+            padding:0 18px;
+          }
+          .brand-logos{
+            gap:8px;
+            height:50px;
+          }
+          .brand-logos img:first-child{
+            height:48px;
+            max-width:118px;
+          }
+          .brand-logos img:last-child{
+            height:43px;
+            max-width:100px;
+          }
+          nav{
+            display:none;
+          }
+        }
+
+
+    
+
+/* ==================================================
+   FOOTER / CONTATTI
+   Più compatto e proporzionato
+================================================== */
+
+.footer{
+  width:100%;
+  margin-top:0;
+  background:#3a3a3a;
+  color:#fff;
+
+  /* barra più sottile */
+  padding:27px 5%;
+  min-height:165px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.footer-inner{
+  width:100%;
+  max-width:1320px;
+
+  /* tre colonne identiche */
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  /* spazio ravvicinato tra le colonne */
+  gap:28px;
+
+  align-items:start;
+  justify-items:center;
+  text-align:center;
+}
+
+
+/* ==================================================
+   COLONNE FOOTER
+================================================== */
+
+.footer-column{
+  width:100%;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  text-align:center;
+}
+
+
+/* ==================================================
+   TITOLI
+   Tutti sulla stessa identica altezza
+================================================== */
+
+.footer h3{
+  width:100%;
+  height:25px;
+
+  margin:0 0 9px 0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  /* caratteri leggermente più grandi */
+  font-size:20px;
+
+  font-weight:500;
+
+  line-height:25px;
+
+  letter-spacing:-.035em;
+}
+
+
+/* ==================================================
+   TESTI
+   Più grandi ma ravvicinati
+================================================== */
+
+.footer-column,
+.footer-column p,
+.footer-column a{
+  color:#c4c4c4;
+
+  font-size:14px;
+
+  line-height:1.42;
+
+  font-weight:400;
+
+  letter-spacing:-.01em;
+}
+
+.footer-column p{
+  margin-bottom:3px;
+}
+
+.footer-column a{
+  text-decoration:none;
+}
+
+.footer-column a:hover{
+  color:#fff;
+}
+
+
+/* Nessun logo nel footer */
+
+.footer-logos{
+  display:none;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width:900px){
+
+  header{
+    min-height:70px;
+    height:70px;
+  }
+
+  .menu-item{
+    height:70px;
+  }
+
+  .hero{
+    min-height:calc(100vh - 70px);
+    padding:60px 30px;
+  }
+
+  .chi-siamo{
+    width:min(calc(100% - 40px),680px);
+    padding:80px 0 75px;
+    grid-template-columns:1fr;
+  }
+
+  .chi-testo p{
+    font-size:19px;
+  }
+
+  .chi-foto{
+    height:58vw;
+    min-height:320px;
+    margin-top:50px;
+  }
+
+  .chi-slogan{
+    margin-top:75px;
+  }
+
+  .offerte-title{
+    margin-top:85px;
+  }
+
+  .lavorazioni{
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+
+  .lavorazione-card{
+    min-height:335px;
+    padding:12px 14px 20px;
+  }
+
+
+  /* FOOTER TABLET */
+
+  .footer{
+    padding:25px 30px;
+    min-height:155px;
+  }
+
+  .footer-inner{
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+
+  .footer h3{
+    height:24px;
+    font-size:18px;
+    line-height:24px;
+    margin-bottom:8px;
+  }
+
+  .footer-column,
+  .footer-column p,
+  .footer-column a{
+    font-size:13px;
+    line-height:1.4;
+  }
+
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width:600px){
+
+  header{
+    height:70px;
+    min-height:70px;
+    padding:0 18px;
+  }
+
+  .brand-logos{
+    gap:8px;
+    height:50px;
+  }
+
+  .brand-logos img:first-child{
+    height:48px;
+    max-width:118px;
+  }
+
+  .brand-logos img:last-child{
+    height:43px;
+    max-width:100px;
+  }
+
+  nav{
+    display:none;
+  }
+
+  .hero{
+    min-height:calc(100vh - 70px);
+    padding:55px 20px;
+  }
+
+  .hero h1{
+    font-size:clamp(50px,15vw,76px);
+  }
+
+  .hero p{
+    font-size:17px;
+    margin-top:22px;
+  }
+
+  .chi-siamo{
+    width:calc(100% - 40px);
+    padding:70px 0 65px;
+  }
+
+  .chi-testo h2{
+    font-size:49px;
+  }
+
+  .chi-testo p{
+    font-size:17px;
+    line-height:1.8;
+  }
+
+  .chi-foto{
+    height:88vw;
+    min-height:300px;
+    margin-top:40px;
+  }
+
+  .chi-slogan{
+    margin-top:60px;
+    padding-top:24px;
+  }
+
+  .chi-slogan-text{
+    font-size:28px;
+  }
+
+  .offerte-title{
+    margin-top:70px;
+    margin-bottom:28px;
+    font-size:44px;
+  }
+
+  .lavorazioni{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .lavorazione-card{
+    min-height:0;
+    padding:11px 13px 16px;
+  }
+
+  .lavorazione-img{
+    width:69%;
+    aspect-ratio:1/1;
+    margin-bottom:15px;
+  }
+
+
+  /* ==================================================
+     FOOTER MOBILE
+  ================================================== */
+
+  .footer{
+    padding:27px 20px;
+    min-height:0;
+  }
+
+  .footer-inner{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+
+  .footer-column{
+    width:100%;
+  }
+
+  .footer h3{
+    height:auto;
+    min-height:24px;
+    font-size:19px;
+    line-height:24px;
+    margin-bottom:8px;
+  }
+
+  .footer-column,
+  .footer-column p,
+  .footer-column a{
+    font-size:13px;
+    line-height:1.45;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         HEADER
+    ========================================================= -->
+
+        <header>
+
+        <div class="brand-logos">
+
+            <img
+                src="Logo1.jpg"
+                alt="INCATEC SRL">
+
+            <img
+                src="Logo2.jpg"
+                alt="GH Saldature">
+
+        </div>
+
+
+        <nav>
+
+            <!-- HOME -->
+
+            <a href="./index.html">
+                Home
+            </a>
+
+
+            <!-- SERVIZI -->
+
+            <div class="menu-item">
+
+                <span class="menu-label">
+                    Servizi
+                </span>
+
+
+                <div class="dropdown">
+
+                    <a href="./montaggio.html">
+                        MONTAGGIO
+                    </a>
+
+                    <a href="./manodopera.html">
+                        PRESTAZIONE DI MANODOPERA
+                    </a>
+
+                    <a href="./intervento-tecnico.html">
+                        INTERVENTO TECNICO
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- LAVORAZIONI -->
+
+            <div class="menu-item">
+
+                <span class="menu-label">
+                    Lavorazioni
+                </span>
+
+
+                <div class="dropdown">
+
+                    <a href="./taglio-laser.html">
+                        TAGLIO LASER
+                    </a>
+
+                    <a href="./piegatura.html">
+                        PIEGATURA
+                    </a>
+
+                    <a href="./saldatura.html">
+                        SALDATURA
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTATTI -->
+
+            <a href="./contatti.html">
+                Contatti
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         SCENA INIZIALE
+    ========================================================= -->
+
+    <main class="pagina">
+
+        <div
+            class="scene-backdrop"
+            aria-hidden="true">
+        </div>
+
+
+        <div
+            id="gearStage"
+            aria-hidden="true">
+
+            <div class="gear-position">
+
+                <div class="gear-scale">
+
+                    <div class="gear-rotation">
+
+                        <svg
+                            class="gear-svg"
+                            viewBox="0 0 800 800"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-label="Ruota dentata">
+
+                            <path
+                                id="gearPath"
+                                class="gear-shape"
+                                fill-rule="evenodd">
+                            </path>
+
+                        </svg>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <h1
+            class="technical-title"
+            id="technicalTitle">
+
+            Intervento tecnico
+
+        </h1>
+
+    </main>
+
+
+
+    <!-- =========================================================
+         CONTENUTO
+    ========================================================= -->
+
+    <section
+        class="inca-technical post-animation"
+        id="intervento-tecnico">
+
+
+        <div class="inca-technical__container">
+
+
+            <!-- =====================================================
+                 INTRO
+            ===================================================== -->
+
+            <div class="inca-technical__intro">
+
+                <div class="inca-technical__intro-text">
+
+                    <p>
+
+                        Interventi tecnici dedicati alla
+                        <strong>
+                            manutenzione e riparazione
+                        </strong>
+                        di benne, betoniere e altre
+                        attrezzature industriali,
+                        attraverso lavorazioni di
+                        carpenteria metallica.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================================
+                 SPAZIO IMMAGINE 1
+            ===================================================== -->
+
+            <div class="technical-visual">
+
+                <img
+                    src="./Intervento1.png"
+                    alt="Intervento tecnico su attrezzatura industriale">
+
+            </div>
+
+
+
+            <!-- =====================================================
+                 DESCRIZIONE
+            ===================================================== -->
+
+            <div class="inca-technical__description">
+
+
+                <div class="inca-technical__description-left">
+
+                    <div class="technical-description-photo">
+
+                        <img
+                            src="Intervento2.png"
+                            alt="Lavorazione di carpenteria metallica">
+
+                    </div>
+
+                </div>
+
+
+                <div class="inca-technical__description-copy">
+
+                    <h2 class="inca-technical__description-title">
+                        La competenza
+                        <strong>
+                            dove serve
+                        </strong>
+                    </h2>
+
+                    <p>
+
+                        L’intervento tecnico permette di riportare le attrezzature
+                        industriali nelle condizioni necessarie per continuare a lavorare
+                        in modo sicuro, efficiente e affidabile. Ogni intervento parte
+                        dall’analisi delle esigenze della macchina e delle parti da
+                        ripristinare.
+
+                    </p>
+
+                    <p>
+
+                        Attraverso lavorazioni di carpenteria metallica, manutenzione
+                        e riparazione, vengono recuperate le strutture danneggiate o
+                        usurate, realizzando soluzioni mirate e resistenti. L’esperienza
+                        nella lavorazione del metallo consente di adattare ogni intervento
+                        alle caratteristiche specifiche dell’attrezzatura.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================= -->
+
+    <footer
+        id="contatti"
+        class="footer post-animation">
+
+
+        <div class="footer-inner">
+
+
+            <!-- CONTATTACI -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Contattaci
+                </h3>
+
+                <p>
+                    RESPONSABILE LAVORI
+                </p>
+
+                <p>
+                    Cell. 3273639328
+                </p>
+
+                <p>
+                    e-mail:
+                    <a href="mailto:service_incatecsrl@outlook.it">
+                        service_incatecsrl@outlook.it
+                    </a>
+                </p>
+
+                <p>
+                    UFFICIO AMMINISTRAZIONE
+                </p>
+
+                <p>
+                    Cell. 02 39548389
+                </p>
+
+                <p>
+                    e-mail:
+                    <a href="mailto:incatec.srl@outlook.com">
+                        incatec.srl@outlook.com
+                    </a>
+                </p>
+
+            </div>
+
+
+            <!-- INDIRIZZI -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Indirizzi
+                </h3>
+
+                <p>
+                    Via Italo Calvino 7/B
+                    <br>
+                    Rho (MI)
+                </p>
+
+                <p>
+                    Località Rivazza 8
+                    <br>
+                    Borgo Priolo (PV)
+                </p>
+
+            </div>
+
+
+            <!-- DATI AZIENDALI -->
+
+            <div class="footer-column">
+
+                <h3>
+                    P.IVA
+                </h3>
+
+                <p>
+                    P.IVA INCATEC SRL:
+                    <br>
+                    12009360962
+                </p>
+
+                <p>
+                    P.IVA G.H. SALDATURE:
+                    <br>
+                    12646890967
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================= -->
+
+    <script>
+
+
+        /* =========================================================
+           GENERATORE DELLA RUOTA
+        ========================================================= */
+
+        const teeth = 12;
+
+        const cx = 400;
+        const cy = 400;
+
+        const rootRadius = 275;
+        const outerRadius = 375;
+
+        const holeRadius = 205;
+
+        const toothAngle =
+            (Math.PI * 2) / teeth;
+
+
+        const svgPath =
+            document.getElementById("gearPath");
+
+
+        const points = [];
+
+
+        function polarPoint(radius, angle) {
+
+            return {
+
+                x:
+                    cx +
+                    Math.cos(angle) * radius,
+
+                y:
+                    cy +
+                    Math.sin(angle) * radius
+
+            };
+
+        }
+
+
+
+        /* =========================================================
+           CREAZIONE DENTI
+        ========================================================= */
+
+        for (
+            let i = 0;
+            i < teeth;
+            i++
+        ) {
+
+            const center =
+                i * toothAngle -
+                Math.PI / 2;
+
+
+            const a1 =
+                center -
+                toothAngle * .43;
+
+
+            const a2 =
+                center -
+                toothAngle * .30;
+
+
+            const a3 =
+                center -
+                toothAngle * .20;
+
+
+            const a4 =
+                center -
+                toothAngle * .16;
+
+
+            const a5 =
+                center +
+                toothAngle * .16;
+
+
+            const a6 =
+                center +
+                toothAngle * .20;
+
+
+            const a7 =
+                center +
+                toothAngle * .30;
+
+
+            const a8 =
+                center +
+                toothAngle * .43;
+
+
+            points.push(
+
+                polarPoint(
+                    rootRadius,
+                    a1
+                ),
+
+                polarPoint(
+                    rootRadius,
+                    a2
+                ),
+
+                polarPoint(
+                    outerRadius,
+                    a3
+                ),
+
+                polarPoint(
+                    outerRadius,
+                    a4
+                ),
+
+                polarPoint(
+                    outerRadius,
+                    a5
+                ),
+
+                polarPoint(
+                    outerRadius,
+                    a6
+                ),
+
+                polarPoint(
+                    rootRadius,
+                    a7
+                ),
+
+                polarPoint(
+                    rootRadius,
+                    a8
+                )
+
+            );
+
+        }
+
+
+
+        /* =========================================================
+           PATH ESTERNO
+        ========================================================= */
+
+        let path = "";
+
+
+        points.forEach(
+            (point, index) => {
+
+                if (index === 0) {
+
+                    path +=
+                        `M ${point.x.toFixed(2)} ${point.y.toFixed(2)} `;
+
+                } else {
+
+                    path +=
+                        `L ${point.x.toFixed(2)} ${point.y.toFixed(2)} `;
+
+                }
+
+            }
+        );
+
+
+        path += "Z";
+
+
+
+        /* =========================================================
+           FORO CENTRALE
+        ========================================================= */
+
+        path +=
+            ` M ${cx + holeRadius} ${cy}`;
+
+
+        for (
+            let i = 1;
+            i <= 96;
+            i++
+        ) {
+
+            const angle =
+                (Math.PI * 2 * i) / 96;
+
+
+            const x =
+                cx +
+                Math.cos(angle) *
+                holeRadius;
+
+
+            const y =
+                cy +
+                Math.sin(angle) *
+                holeRadius;
+
+
+            path +=
+                ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+
+        }
+
+
+        path += " Z";
+
+
+        svgPath.setAttribute(
+            "d",
+            path
+        );
+
+
+
+        /* =========================================================
+           ELEMENTI SCENA
+        ========================================================= */
+
+        const title =
+            document.getElementById(
+                "technicalTitle"
+            );
+
+
+        const pagina =
+            document.querySelector(
+                ".pagina"
+            );
+
+
+        const reducedMotion =
+            window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+
+
+        let completed =
+            false;
+
+
+
+        /* =========================================================
+           FINE ANIMAZIONE
+           ESATTAMENTE 2 SECONDI
+        ========================================================= */
+
+        function finishScene() {
+
+            if (completed) {
+                return;
+            }
+
+
+            completed = true;
+
+
+            /*
+                Dopo esattamente 2 secondi
+                viene mostrato il titolo.
+            */
+
+            title.classList.add(
+                "show"
+            );
+
+
+            /*
+                Il contenuto viene rivelato
+                subito dopo la comparsa del titolo.
+            */
+
+            window.setTimeout(
+                () => {
+
+                    document.body.classList.add(
+                        "scene-settled"
+                    );
+
+
+                    pagina.classList.add(
+                        "is-settled"
+                    );
+
+
+                    document.body.classList.add(
+                        "content-revealed"
+                    );
+
+                },
+                450
+            );
+
+        }
+
+
+
+        /* =========================================================
+           AVVIO
+        ========================================================= */
+
+        if (reducedMotion) {
+
+            finishScene();
+
+        } else {
+
+            /*
+                2000 ms = 2 SECONDI ESATTI
+            */
+
+            window.setTimeout(
+                finishScene,
+                2000
+            );
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,2981 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Piegatura CNC | INCATEC SRL</title>
+
+<style>
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+    background:#3a3a3a;
+    color:#111111;
+    font-family:
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        sans-serif;
+}
+
+body.scene-lock{
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    background:#3a3a3a;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:5000;
+    width:100%;
+    height:90px;
+    padding:0 1.5%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(255,255,255,.98);
+    border-bottom:1px solid #e8e8e8;
+    box-shadow:0 5px 20px rgba(0,0,0,.04);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translateY(-20px);
+    transition:
+        opacity .65s cubic-bezier(.22,1,.36,1),
+        transform .65s cubic-bezier(.22,1,.36,1),
+        visibility 0s linear .65s;
+}
+
+body.scene-lock header{
+    position:absolute;
+    top:0;
+    left:0;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transform:translateY(-20px);
+    background:transparent;
+}
+
+body.scene-ready header{
+    position:sticky;
+    top:0;
+    left:auto;
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transform:translateY(0);
+    background:rgba(255,255,255,.98);
+    transition:
+        opacity .65s cubic-bezier(.22,1,.36,1),
+        transform .65s cubic-bezier(.22,1,.36,1),
+        visibility 0s linear 0s;
+}
+
+
+/* =========================================================
+   LOGHI
+   ========================================================= */
+
+.brand-logos{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    height:86px;
+}
+
+.brand-logos a{
+    display:flex;
+    align-items:center;
+    text-decoration:none;
+}
+
+.brand-logos img{
+    display:block;
+    width:auto;
+    object-fit:contain;
+    max-height:86px;
+}
+
+.brand-logos img:first-child{
+    height:86px;
+    max-width:250px;
+}
+
+.brand-logos img:last-child{
+    height:78px;
+    max-width:220px;
+}
+
+
+/* =========================================================
+   NAVIGAZIONE
+   ========================================================= */
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:38px;
+}
+
+nav > a,
+.menu-label{
+    position:relative;
+    text-decoration:none;
+    color:#111;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:font-weight .15s ease;
+}
+
+nav > a:hover,
+.menu-item:hover > .menu-label{
+    font-weight:700;
+}
+
+nav > a::after,
+.menu-label::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:100%;
+    height:2px;
+    background:#c61722;
+    transform:scaleX(0);
+    transform-origin:right;
+    transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+
+nav > a:hover::after,
+.menu-item:hover > .menu-label::after{
+    transform:scaleX(1);
+    transform-origin:left;
+}
+
+.menu-item{
+    position:relative;
+    height:90px;
+    display:flex;
+    align-items:center;
+}
+
+.dropdown{
+    position:absolute;
+    top:calc(100% - 1px);
+    left:50%;
+    transform:translateX(-50%);
+    width:285px;
+    background:#fff;
+    padding:8px 0;
+    border-top:2px solid #c61722;
+    box-shadow:0 18px 40px rgba(0,0,0,.10);
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .15s ease, visibility .15s ease;
+    z-index:6000;
+}
+
+.menu-item:hover .dropdown{
+    opacity:1;
+    visibility:visible;
+}
+
+.dropdown a{
+    display:block;
+    padding:12px 24px;
+    text-decoration:none;
+    color:#111;
+    background:#fff;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:.07em;
+    transition:font-weight .15s ease;
+}
+
+.dropdown a:hover{
+    color:#111;
+    background:#fff;
+    font-weight:700;
+}
+
+
+/* =========================================================
+   SCENA CNC
+   ========================================================= */
+
+.pagina{
+    position:relative;
+    z-index:10;
+    width:100%;
+    height:100vh;
+    min-height:600px;
+    overflow:hidden;
+    background:#3a3a3a;
+}
+
+body.scene-lock .pagina{
+    width:100%;
+    height:100vh;
+}
+
+body.scene-ready .pagina{
+    height:calc(100vh - 90px);
+}
+
+.pagina svg{
+    display:block;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+    background:#3a3a3a;
+}
+
+
+/* =========================================================
+   MACCHINA
+   ========================================================= */
+
+#machineScale{
+    transform-origin:700px 600px;
+}
+
+#machine{
+    transform-origin:700px 600px;
+}
+
+#punch{
+    transform-origin:700px 575px;
+}
+
+
+/* =========================================================
+   LAMIERA
+   ========================================================= */
+
+#sheet{
+    fill:#ed0011;
+}
+
+#highlight{
+    fill:none;
+    stroke:rgba(255,255,255,.28);
+    stroke-width:4;
+    stroke-linecap:round;
+}
+
+
+/* =========================================================
+   TITOLO ANIMAZIONE
+   ========================================================= */
+
+#titleGroup{
+    opacity:0;
+    transform-origin:350px 450px;
+}
+
+#title1,
+#title2{
+    fill:#ed0011;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:145px;
+    font-weight:900;
+    letter-spacing:-6px;
+}
+
+
+/* =========================================================
+   CONTENUTO
+   ========================================================= */
+
+.content{
+    position:relative;
+    z-index:20;
+    background:#fff;
+    opacity:0;
+    transform:translateY(35px);
+    transition:
+        opacity .65s ease,
+        transform .8s cubic-bezier(.22,1,.36,1);
+}
+
+body.content-revealed .content{
+    opacity:1;
+    transform:translateY(0);
+}
+
+
+/* =========================================================
+   CONTENITORE
+   ========================================================= */
+
+.cnc-page{
+    width:min(1320px,calc(100% - 100px));
+    margin:0 auto;
+    padding-bottom:120px;
+}
+
+
+/* =========================================================
+   DESCRIZIONE
+   ========================================================= */
+
+.machine-intro{
+    display:grid;
+    grid-template-columns:.8fr 1.2fr;
+    gap:100px;
+    padding:125px 0 75px;
+}
+
+.machine-intro-title{
+    font-size:clamp(42px,5vw,68px);
+    line-height:.92;
+    letter-spacing:-.07em;
+    font-weight:400;
+}
+
+.machine-intro-title strong{
+    font-weight:700;
+}
+
+.machine-intro-copy{
+    max-width:760px;
+}
+
+.machine-intro-copy p{
+    margin-bottom:23px;
+    color:#5f5f5f;
+    font-size:17px;
+    line-height:1.8;
+    font-weight:300;
+}
+
+.machine-intro-copy p:last-of-type{
+    margin-bottom:0;
+}
+
+
+/* =========================================================
+   IMMAGINE PRINCIPALE
+   ========================================================= */
+
+.cnc-main-image{
+    position:relative;
+    width:100%;
+    aspect-ratio:1411 / 1115;
+    overflow:hidden;
+    background:#f5f5f5;
+}
+
+.cnc-main-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    object-position:center;
+}
+
+.image-label{
+    position:absolute;
+    left:30px;
+    bottom:25px;
+    padding:10px 13px;
+    background:#111;
+    color:#fff;
+    font-size:10px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+}
+
+
+/* =========================================================
+   DATI PRINCIPALI
+   ========================================================= */
+
+.machine-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    margin-top:30px;
+    border-top:0;
+    border-bottom:1px solid #dedede;
+}
+
+.machine-stat{
+    min-height:245px;
+    padding:38px;
+    margin-top:40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-right:1px solid #dedede;
+    transition:
+        background .35s ease,
+        color .35s ease;
+}
+
+.machine-stat:last-child{
+    border-right:0;
+}
+
+.machine-stat:hover{
+    background:#111;
+    color:#fff;
+}
+
+.machine-stat small{
+    color:#777;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+}
+
+.machine-stat:hover small{
+    color:#aaa;
+}
+
+.machine-stat strong{
+    font-size:clamp(44px,5vw,70px);
+    line-height:.85;
+    letter-spacing:-.08em;
+    font-weight:500;
+}
+
+.machine-stat strong span{
+    margin-left:4px;
+    color:#777;
+    font-size:14px;
+    letter-spacing:0;
+    font-weight:400;
+}
+
+.machine-stat:hover strong span{
+    color:#aaa;
+}
+
+.machine-stat p{
+    max-width:190px;
+    color:#666;
+    font-size:13px;
+    line-height:1.55;
+}
+
+.machine-stat:hover p{
+    color:#aaa;
+}
+
+
+/* =========================================================
+   SPECIFICHE TECNICHE
+   ========================================================= */
+
+.technical-section{
+    display:grid;
+    grid-template-columns:.78fr 1.22fr;
+    gap:90px;
+    padding:120px 0;
+    align-items:start;
+}
+
+.technical-title{
+    padding-top:2px;
+}
+
+.technical-title h2{
+    max-width:500px;
+    font-size:clamp(48px,5.5vw,76px);
+    line-height:.91;
+    letter-spacing:-.075em;
+    font-weight:400;
+}
+
+.technical-title h2 strong{
+    font-weight:700;
+}
+
+.technical-table{
+    width:100%;
+    border-top:1px solid #dedede;
+}
+
+.technical-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:70px;
+    border-bottom:1px solid #dedede;
+}
+
+.technical-cell{
+    display:flex;
+    align-items:center;
+    padding:19px 0;
+}
+
+.technical-cell.label{
+    padding-right:30px;
+    color:#666;
+    font-size:14px;
+    line-height:1.4;
+    font-weight:400;
+}
+
+.technical-cell.value{
+    padding-left:30px;
+    color:#111;
+    font-size:16px;
+    line-height:1.35;
+    font-weight:700;
+}
+
+
+/* =========================================================
+   CNC
+   ========================================================= */
+
+.cnc-editorial{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:100px;
+    padding:0 0 120px;
+    align-items:stretch;
+}
+
+.cnc-editorial-text h2{
+    margin-bottom:30px;
+    font-size:clamp(42px,5vw,68px);
+    line-height:.92;
+    letter-spacing:-.07em;
+    font-weight:400;
+}
+
+.cnc-editorial-text h2 strong{
+    font-weight:700;
+}
+
+.cnc-editorial-text > p{
+    max-width:700px;
+    margin-bottom:22px;
+    color:#5f5f5f;
+    font-size:16px;
+    line-height:1.8;
+    font-weight:300;
+}
+
+.cnc-feature-list{
+    margin-top:35px;
+    border-top:1px solid #dedede;
+}
+
+.cnc-feature{
+    display:grid;
+    grid-template-columns:42px 1fr;
+    gap:18px;
+    padding:20px 0;
+    border-bottom:1px solid #dedede;
+}
+
+.cnc-feature-number{
+    color:#ed0011;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.1em;
+}
+
+.cnc-feature strong{
+    display:block;
+    margin-bottom:5px;
+    font-size:15px;
+    font-weight:600;
+}
+
+.cnc-feature span{
+    color:#666;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.cnc-secondary-image{
+    position:relative;
+    width:100%;
+    aspect-ratio:1296 / 1213;
+    align-self:start;
+    overflow:hidden;
+    background:#f5f5f5;
+}
+
+.cnc-secondary-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    object-position:center;
+}
+
+.image-note{
+    position:absolute;
+    left:25px;
+    bottom:25px;
+    padding:10px 13px;
+    background:#111;
+    color:#fff;
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+
+/* =========================================================
+   WILA
+   ========================================================= */
+
+.wila-section{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:100px;
+    padding:0 0 120px;
+    align-items:center;
+}
+
+.wila-image{
+    position:relative;
+    width:100%;
+    aspect-ratio:1536 / 1024;
+    overflow:hidden;
+    background:#f5f5f5;
+}
+
+.wila-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    object-position:center;
+}
+
+.wila-content h2{
+    margin-bottom:28px;
+    font-size:clamp(42px,5vw,68px);
+    line-height:.92;
+    letter-spacing:-.07em;
+    font-weight:400;
+}
+
+.wila-content h2 strong{
+    font-weight:700;
+}
+
+.wila-content p{
+    margin-bottom:21px;
+    color:#5f5f5f;
+    font-size:16px;
+    line-height:1.8;
+    font-weight:300;
+}
+
+
+/* =========================================================
+   RAPIDITÀ E SICUREZZA
+   ========================================================= */
+
+.performance-section{
+    display:grid;
+    grid-template-columns:.85fr 1.15fr;
+    gap:100px;
+    padding:0 0 120px;
+    align-items:start;
+}
+
+.performance-title h2{
+    font-size:clamp(42px,5vw,68px);
+    line-height:.92;
+    letter-spacing:-.07em;
+    font-weight:400;
+}
+
+.performance-title h2 strong{
+    font-weight:700;
+}
+
+.performance-copy > p{
+    margin-bottom:25px;
+    color:#5f5f5f;
+    font-size:16px;
+    line-height:1.8;
+    font-weight:300;
+}
+
+.performance-copy > p:last-of-type{
+    margin-bottom:45px;
+}
+
+.performance-data{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-top:1px solid #dedede;
+}
+
+.performance-data-item{
+    min-height:170px;
+    padding:32px;
+    border-bottom:1px solid #dedede;
+}
+
+.performance-data-item:nth-child(odd){
+    border-right:1px solid #dedede;
+}
+
+.performance-data-item strong{
+    display:block;
+    margin-bottom:10px;
+    font-size:40px;
+    line-height:1;
+    letter-spacing:-.06em;
+    font-weight:500;
+}
+
+.performance-data-item span{
+    display:block;
+    max-width:280px;
+    color:#666;
+    font-size:14px;
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   IMMAGINE — RAPIDITÀ E SICUREZZA
+   ========================================================= */
+
+.performance-image{
+    width:100%;
+    aspect-ratio:1921 / 819;
+    overflow:hidden;
+    background:#f5f5f5;
+    margin:0 0 120px;
+}
+
+.performance-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    object-position:center;
+}
+
+
+/* =========================================================
+   SPAZIO VISIVO FINALE
+   ========================================================= */
+
+.cnc-final-image{
+    width:100%;
+    aspect-ratio:1518 / 1036;
+    overflow:hidden;
+    background:#f5f5f5;
+    margin-top:0;
+}
+
+.cnc-final-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+    object-position:center;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+    width:100%;
+    margin-top:0;
+    background:#3a3a3a;
+    color:#fff;
+    padding:27px 5%;
+    min-height:165px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.footer-inner{
+    width:100%;
+    max-width:1320px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    align-items:start;
+    justify-items:center;
+    text-align:center;
+}
+
+.footer-column{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+}
+
+.footer h3{
+    width:100%;
+    height:25px;
+    margin:0 0 9px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:20px;
+    font-weight:500;
+    line-height:25px;
+    letter-spacing:-.035em;
+}
+
+.footer-column,
+.footer-column p,
+.footer-column a{
+    color:#c4c4c4;
+    font-size:14px;
+    line-height:1.42;
+    font-weight:400;
+    letter-spacing:-.01em;
+}
+
+.footer-column p{
+    margin-bottom:3px;
+}
+
+.footer-column a{
+    text-decoration:none;
+}
+
+.footer-column a:hover{
+    color:#fff;
+}
+
+.footer-logos{
+    display:none;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:1000px){
+
+    .cnc-page{
+        width:min(100% - 50px,800px);
+    }
+
+    .machine-intro,
+    .technical-section,
+    .cnc-editorial,
+    .wila-section,
+    .performance-section{
+        grid-template-columns:1fr;
+        gap:50px;
+    }
+
+    .machine-stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .machine-stat:nth-child(2){
+        border-right:0;
+    }
+
+    .machine-stat:nth-child(-n+2){
+        border-bottom:1px solid #dedede;
+    }
+
+    .technical-title h2{
+        max-width:650px;
+    }
+
+    .cnc-secondary-image,
+    .wila-image{
+        min-height:0;
+        height:auto;
+    }
+
+    .performance-copy{
+        max-width:800px;
+    }
+
+    header{
+        min-height:70px;
+        height:70px;
+    }
+
+    .menu-item{
+        height:70px;
+    }
+
+    .footer{
+        padding:25px 30px;
+        min-height:155px;
+    }
+
+    .footer-inner{
+        grid-template-columns:repeat(3,1fr);
+        gap:18px;
+    }
+
+    .footer h3{
+        height:24px;
+        font-size:18px;
+        line-height:24px;
+        margin-bottom:8px;
+    }
+
+    .footer-column,
+    .footer-column p,
+    .footer-column a{
+        font-size:13px;
+        line-height:1.4;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:700px){
+
+    header{
+        height:70px;
+        min-height:70px;
+        padding:0 18px;
+    }
+
+    .brand-logos{
+        gap:8px;
+        height:50px;
+    }
+
+    .brand-logos img:first-child{
+        height:48px;
+        max-width:118px;
+    }
+
+    .brand-logos img:last-child{
+        height:43px;
+        max-width:100px;
+    }
+
+    nav{
+        display:none;
+    }
+
+    .pagina{
+        height:100vh;
+        min-height:580px;
+    }
+
+    body.scene-lock .pagina{
+        height:100vh;
+    }
+
+    body.scene-ready .pagina{
+        height:calc(100vh - 70px);
+    }
+
+    .pagina svg{
+        height:100vh;
+    }
+
+    .cnc-page{
+        width:calc(100% - 40px);
+    }
+
+    .machine-intro{
+        padding:75px 0 45px;
+    }
+
+    .machine-intro-title{
+        font-size:clamp(38px,9vw,50px);
+    }
+
+    .machine-intro-copy p{
+        font-size:15px;
+        line-height:1.75;
+    }
+
+    .cnc-main-image{
+        height:auto;
+        min-height:0;
+    }
+
+    .machine-stats{
+        grid-template-columns:1fr;
+    }
+
+    .machine-stat,
+    .machine-stat:nth-child(2){
+        border-right:0;
+        border-bottom:1px solid #dedede;
+    }
+
+    .machine-stat:last-child{
+        border-bottom:0;
+    }
+
+    .technical-section{
+        padding:75px 0;
+    }
+
+    .technical-row{
+        display:block;
+        min-height:0;
+    }
+
+    .technical-cell{
+        min-height:58px;
+        padding:15px 0;
+        border-bottom:0;
+    }
+
+    .technical-cell.label{
+        padding-right:0;
+        padding-bottom:5px;
+        color:#777;
+    }
+
+    .technical-cell.value{
+        padding-left:0;
+        padding-top:5px;
+        padding-bottom:18px;
+        font-size:16px;
+    }
+
+    .cnc-editorial{
+        padding:0 0 75px;
+    }
+
+    .cnc-secondary-image,
+    .wila-image{
+        height:auto;
+        min-height:0;
+    }
+
+    .wila-section{
+        padding-bottom:75px;
+    }
+
+    .performance-section{
+        padding-bottom:75px;
+    }
+
+    .performance-image{
+        margin-bottom:75px;
+    }
+
+    .performance-copy > p{
+        font-size:15px;
+    }
+
+    .performance-data{
+        grid-template-columns:1fr;
+    }
+
+    .performance-data-item{
+        min-height:145px;
+        padding:27px 0;
+    }
+
+    .performance-data-item:nth-child(odd){
+        border-right:0;
+    }
+
+    .performance-data-item strong{
+        font-size:35px;
+    }
+
+    .cnc-final-image{
+        height:auto;
+        min-height:0;
+    }
+
+    .footer{
+        padding:27px 20px;
+        min-height:0;
+    }
+
+    .footer-inner{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .footer-column{
+        width:100%;
+    }
+
+    .footer h3{
+        height:auto;
+        min-height:24px;
+        font-size:19px;
+        line-height:24px;
+        margin-bottom:8px;
+    }
+
+    .footer-column,
+    .footer-column p,
+    .footer-column a{
+        font-size:13px;
+        line-height:1.45;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITÀ
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        transition-duration:.01ms !important;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body class="scene-lock">
+
+
+<!-- ========================================================
+     HEADER
+     ======================================================== -->
+
+<header>
+
+    <div class="brand-logos">
+
+        <a href="./index.html">
+
+            <img
+                src="Logo1.jpg"
+                alt="INCATEC SRL"
+            >
+
+        </a>
+
+        <a href="./index.html">
+
+            <img
+                src="Logo2.jpg"
+                alt="GH Saldature"
+            >
+
+        </a>
+
+    </div>
+
+
+    <nav>
+
+        <a href="./index.html">
+            Home
+        </a>
+
+
+        <div class="menu-item">
+
+            <span class="menu-label">
+                Servizi
+            </span>
+
+            <div class="dropdown">
+
+                <a href="./montaggio.html">
+                    MONTAGGIO
+                </a>
+
+                <a href="./manodopera.html">
+                    PRESTAZIONE DI MANODOPERA
+                </a>
+
+                <a href="./intervento-tecnico.html">
+                    INTERVENTO TECNICO
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="menu-item">
+
+            <span class="menu-label">
+                Lavorazioni
+            </span>
+
+            <div class="dropdown">
+
+                <a href="./taglio-laser.html">
+                    TAGLIO LASER
+                </a>
+
+                <a href="./piegatura.html">
+                    PIEGATURA
+                </a>
+
+                <a href="./saldatura.html">
+                    SALDATURA
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <a href="./contatti.html">
+            Contatti
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<!-- ========================================================
+     ANIMAZIONE INIZIALE
+     ======================================================== -->
+
+<section
+    class="pagina"
+    id="laserStage"
+>
+
+<svg
+    viewBox="0 0 1500 900"
+    preserveAspectRatio="xMidYMid meet"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+>
+
+
+<!-- =====================================================
+     TITOLO
+     ===================================================== -->
+
+<g id="titleGroup">
+
+    <text
+        id="title1"
+        x="70"
+        y="405"
+    >
+        PIEGATURA
+    </text>
+
+    <text
+        id="title2"
+        x="70"
+        y="535"
+    >
+        CNC
+    </text>
+
+</g>
+
+
+
+<!-- =====================================================
+     MACCHINA
+     ===================================================== -->
+
+<g id="machineScale">
+
+    <g id="machine">
+
+        <g id="punch">
+
+            <path
+                d="
+                    M535 100
+                    Q535 90 548 90
+                    L852 90
+                    Q865 90 865 103
+                    L865 230
+                    L700 575
+                    L535 230
+                    Z
+                "
+                fill="#ed0011"
+            />
+
+        </g>
+
+
+        <path
+            id="sheet"
+        ></path>
+
+
+        <path
+            id="highlight"
+        ></path>
+
+
+    </g>
+
+</g>
+
+</svg>
+
+</section>
+
+
+
+<!-- ========================================================
+     CONTENUTO
+     ======================================================== -->
+
+<main class="content">
+
+
+<div class="cnc-page">
+
+
+<!-- =====================================================
+     DESCRIZIONE
+     ===================================================== -->
+
+<section class="machine-intro">
+
+    <div>
+
+        <h2 class="machine-intro-title">
+
+            Piegatrice CNC
+            <strong>Ermaksan Falcon</strong>
+
+        </h2>
+
+    </div>
+
+
+    <div class="machine-intro-copy">
+
+        <p>
+            La nostra pressa piegatrice idraulica CNC
+            <strong>Ermaksan Falcon</strong> dispone di una
+            <strong>lunghezza utile di piegatura di 3100mm</strong>
+            e di una <strong>forza di lavoro programmabile fino a 220ton</strong>.
+        </p>
+
+        <p>
+            La configurazione a <strong>5 assi controllati</strong>
+            permette di gestire con precisione il movimento della pressa,
+            il posizionamento della lamiera e la centinatura automatica
+            della tavola.
+        </p>
+
+        <p>
+            È una macchina pensata per commesse in cui contano
+            <strong>dimensione del pezzo, precisione dell'angolo,
+            ripetibilità e controllo del ciclo di piegatura</strong>.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PRIMA IMMAGINE
+     ===================================================== -->
+
+<section class="cnc-main-image">
+
+    <img
+        src="Piegatrice1.jpg"
+        alt="Pressa piegatrice CNC Ermaksan Falcon"
+        loading="lazy"
+    >
+
+</section>
+
+
+
+<!-- =====================================================
+     DATI PRINCIPALI
+     ===================================================== -->
+
+<section class="machine-stats">
+
+
+    <div class="machine-stat">
+
+        <small>
+            Lunghezza utile
+        </small>
+
+        <strong>
+            3100<span>mm</span>
+        </strong>
+
+        <p>
+            Lunghezza utile di piegatura.
+        </p>
+
+    </div>
+
+
+    <div class="machine-stat">
+
+        <small>
+            Forza di lavoro
+        </small>
+
+        <strong>
+            220<span>ton</span>
+        </strong>
+
+        <p>
+            Forza di lavoro programmabile.
+        </p>
+
+    </div>
+
+
+    <div class="machine-stat">
+
+        <small>
+            Assi controllati
+        </small>
+
+        <strong>
+            5<span>assi</span>
+        </strong>
+
+        <p>
+            Y1 · Y2 · X · R · C.
+        </p>
+
+    </div>
+
+
+    <div class="machine-stat">
+
+        <small>
+            Apertura
+        </small>
+
+        <strong>
+            550<span>mm</span>
+        </strong>
+
+        <p>
+            Apertura massima della pressa.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     SPECIFICHE TECNICHE
+     ===================================================== -->
+
+<section class="technical-section">
+
+
+    <div class="technical-title">
+
+        <h2>
+
+            Caratteristiche
+            <strong>tecniche</strong>
+
+        </h2>
+
+    </div>
+
+
+    <div class="technical-table">
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Lunghezza utile
+            </div>
+
+            <div class="technical-cell value">
+                3100mm
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Forza di lavoro
+            </div>
+
+            <div class="technical-cell value">
+                220ton
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Assi controllati
+            </div>
+
+            <div class="technical-cell value">
+                Y1-Y2-X-R-C
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Distanza tra montanti
+            </div>
+
+            <div class="technical-cell value">
+                2600mm
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Apertura massima
+            </div>
+
+            <div class="technical-cell value">
+                550mm
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Corsa Y1-Y2
+            </div>
+
+            <div class="technical-cell value">
+                275mm
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Corsa asse X
+            </div>
+
+            <div class="technical-cell value">
+                800mm
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Corsa asse R
+            </div>
+
+            <div class="technical-cell value">
+                250mm
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                CNC
+            </div>
+
+            <div class="technical-cell value">
+                Touchscreen 15"
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Programmazione
+            </div>
+
+            <div class="technical-cell value">
+                2D · 3D
+            </div>
+
+        </div>
+
+
+        <div class="technical-row">
+
+            <div class="technical-cell label">
+                Centinatura
+            </div>
+
+            <div class="technical-cell value">
+                Automatica WILA
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PROGRAMMAZIONE CNC
+     ===================================================== -->
+
+<section class="cnc-editorial">
+
+    <div class="cnc-editorial-text">
+
+        <h2>
+
+            Programmazione
+            <strong>CNC</strong>
+
+        </h2>
+
+        <p>
+            La macchina dispone di un
+            <strong>CNC touchscreen</strong>
+            con programmazione grafica 2D e visualizzazione 3D.
+        </p>
+
+        <p>
+            Il controllo consente di gestire la geometria del pezzo
+            e i principali parametri del ciclo di piegatura.
+        </p>
+
+
+        <div class="cnc-feature-list">
+
+
+            <div class="cnc-feature">
+
+                <div class="cnc-feature-number">
+                    01
+                </div>
+
+                <div>
+
+                    <strong>
+                        Programmazione 2D
+                    </strong>
+
+                    <span>
+                        Inserimento e gestione grafica della geometria
+                        del pezzo.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="cnc-feature">
+
+                <div class="cnc-feature-number">
+                    02
+                </div>
+
+                <div>
+
+                    <strong>
+                        Visualizzazione 3D
+                    </strong>
+
+                    <span>
+                        Visualizzazione tridimensionale del pezzo
+                        durante la programmazione.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="cnc-feature">
+
+                <div class="cnc-feature-number">
+                    03
+                </div>
+
+                <div>
+
+                    <strong>
+                        Sequenza di piega
+                    </strong>
+
+                    <span>
+                        Calcolo automatico della sequenza di piega
+                        e dello sviluppo del pezzo.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="cnc-feature">
+
+                <div class="cnc-feature-number">
+                    04
+                </div>
+
+                <div>
+
+                    <strong>
+                        Calcolo della forza
+                    </strong>
+
+                    <span>
+                        Calcolo della forza di piega in funzione
+                        dei parametri programmati.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="cnc-feature">
+
+                <div class="cnc-feature-number">
+                    05
+                </div>
+
+                <div>
+
+                    <strong>
+                        Controllo collisioni
+                    </strong>
+
+                    <span>
+                        Rilevamento automatico delle possibili collisioni
+                        durante la programmazione.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="cnc-secondary-image">
+
+        <img
+            src="Piegatrice2.jpg"
+            alt="Controllo CNC della pressa piegatrice"
+            loading="lazy"
+        >
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CENTINATURA WILA
+     ===================================================== -->
+
+<section class="wila-section">
+
+    <div class="wila-image">
+
+        <img
+            src="Piegatrice3.jpg"
+            alt="Sistema di centinatura WILA"
+            loading="lazy"
+        >
+
+    </div>
+
+
+    <div class="wila-content">
+
+        <h2>
+
+            Centinatura
+            <strong>WILA</strong>
+
+        </h2>
+
+        <p>
+            La pressa è dotata di un sistema di
+            <strong>centinatura WILA</strong> che compensa la
+            deflessione della macchina durante la piegatura.
+        </p>
+
+        <p>
+            La centinatura viene gestita dal CNC in funzione dei
+            parametri impostati, contribuendo a mantenere costante
+            l'angolo di piega lungo la lunghezza del pezzo.
+        </p>
+
+        <p>
+            Il sistema consente inoltre regolazioni localizzate per
+            la compensazione delle tolleranze della macchina
+            e degli utensili.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RAPIDITÀ E SICUREZZA
+     ===================================================== -->
+
+<section class="performance-section">
+
+
+    <div class="performance-title">
+
+        <h2>
+
+            Rapidità e
+            <strong>sicurezza</strong>
+
+        </h2>
+
+    </div>
+
+
+    <div class="performance-copy">
+
+        <p>
+            La macchina dispone di <strong>intermedi con bloccaggio rapido</strong>
+            e di <strong>bracci di supporto anteriori scorrevoli
+            e regolabili in altezza</strong>, utili nella gestione
+            della lamiera durante la lavorazione.
+        </p>
+
+        <p>
+            Il sistema di sicurezza laser <strong>DSP AP</strong>
+            permette di ottimizzare il punto di cambio velocità
+            durante il ciclo. La documentazione indica la possibilità
+            di portarlo fino a circa <strong>2mm dalla lamiera</strong>.
+        </p>
+
+        <p>
+            Il costruttore indica un risparmio di circa
+            <strong>1,2 secondi per ogni piega</strong> rispetto a un
+            sistema convenzionale. Il risultato effettivo dipende
+            dal ciclo e dalla geometria del pezzo.
+        </p>
+
+
+        <div class="performance-data">
+
+
+            <div class="performance-data-item">
+
+                <strong>
+                    1,2s
+                </strong>
+
+                <span>
+                    Risparmio dichiarato per piega rispetto a un
+                    sistema convenzionale.
+                </span>
+
+            </div>
+
+
+            <div class="performance-data-item">
+
+                <strong>
+                    2mm
+                </strong>
+
+                <span>
+                    Punto di cambio velocità indicato per il sistema
+                    DSP AP.
+                </span>
+
+            </div>
+
+
+            <div class="performance-data-item">
+
+                <strong>
+                    DSP AP
+                </strong>
+
+                <span>
+                    Barriera laser di sicurezza per il ciclo
+                    di piegatura.
+                </span>
+
+            </div>
+
+
+            <div class="performance-data-item">
+
+                <strong>
+                    CE
+                </strong>
+
+                <span>
+                    Macchina indicata nella documentazione come
+                    conforme CE.
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     IMMAGINE — RAPIDITÀ E SICUREZZA
+     ===================================================== -->
+
+<section class="performance-image">
+
+    <img
+        src="Piegatrice4.jpg"
+        alt="Dettaglio dei sistemi di sicurezza e supporto della pressa piegatrice"
+        loading="lazy"
+    >
+
+</section>
+
+
+<!-- =====================================================
+     IMMAGINE FINALE
+     ===================================================== -->
+
+<section class="cnc-final-image">
+
+    <img
+        src="Piegatrice 5.jpg"
+        alt="Pressa piegatrice Ermaksan Speed-Bend"
+        loading="lazy"
+    >
+
+</section>
+
+
+</div>
+
+</main>
+
+
+
+<!-- ========================================================
+     FOOTER
+     ======================================================== -->
+
+<footer
+    id="contatti"
+    class="footer"
+>
+
+
+<div class="footer-inner">
+
+
+    <div class="footer-logos">
+
+        <img
+            src="Logo1.jpg"
+            alt="INCATEC SRL"
+        >
+
+        <img
+            src="Logo2.jpg"
+            alt="GH Saldature"
+        >
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Contattaci
+        </h3>
+
+        <p>
+            RESPONSABILE LAVORI
+        </p>
+
+        <p>
+            Cell. 3273639328
+        </p>
+
+        <p>
+            e-mail:
+
+            <a
+                href="mailto:service_incatecsrl@outlook.it"
+            >
+                service_incatecsrl@outlook.it
+            </a>
+
+        </p>
+
+        <p>
+            UFFICIO AMMINISTRAZIONE
+        </p>
+
+        <p>
+            Cell. 02 39548389
+        </p>
+
+        <p>
+            e-mail:
+
+            <a
+                href="mailto:incatec.srl@outlook.com"
+            >
+                incatec.srl@outlook.com
+            </a>
+
+        </p>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            INDIRIZZI
+        </h3>
+
+        <p>
+            Via Italo Calvino 7/B<br>
+            Rho (MI)
+        </p>
+
+        <p>
+            Località Rivazza 8<br>
+            Borgo Priolo (PV)
+        </p>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Dati aziendali
+        </h3>
+
+        <p>
+            P.IVA INCATEC SRL:<br>
+            12009360962
+        </p>
+
+        <p>
+            P.IVA G.H. SALDATURE:<br>
+            12646890967
+        </p>
+
+    </div>
+
+
+</div>
+
+</footer>
+
+
+
+<script>
+
+/* =========================================================
+   ELEMENTI
+   ========================================================= */
+
+const machine =
+    document.getElementById(
+        "machine"
+    );
+
+const machineScale =
+    document.getElementById(
+        "machineScale"
+    );
+
+const punch =
+    document.getElementById(
+        "punch"
+    );
+
+const sheet =
+    document.getElementById(
+        "sheet"
+    );
+
+const highlight =
+    document.getElementById(
+        "highlight"
+    );
+
+const titleGroup =
+    document.getElementById(
+        "titleGroup"
+    );
+
+
+/* =========================================================
+   DURATA
+   ========================================================= */
+
+const TOTAL_DURATION = 3000;
+
+const MACHINE_DURATION = 1650;
+
+const TITLE_START = 1650;
+
+const TITLE_DURATION = 550;
+
+
+/* =========================================================
+   PARAMETRI ANIMAZIONE
+   ========================================================= */
+
+const LEFT = 120;
+
+const RIGHT = 1280;
+
+const CENTER = 700;
+
+const SHEET_Y = 600;
+
+const THICKNESS = 40;
+
+const MAX_DEPTH = 190;
+
+const PUNCH_DISTANCE = 190;
+
+const MOVE_RIGHT = 720;
+
+const START_SCALE = 1.00;
+
+const END_SCALE = 0.58;
+
+
+/* =========================================================
+   EASING
+   ========================================================= */
+
+function easeInOut(t){
+
+    t =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                t
+            )
+        );
+
+    return t < .5
+
+        ?
+
+        2 * t * t
+
+        :
+
+        1 -
+        Math.pow(
+            -2 * t + 2,
+            2
+        ) / 2;
+}
+
+
+/* =========================================================
+   LAMIERA
+   ========================================================= */
+
+function drawSheet(progress){
+
+    const depth =
+        MAX_DEPTH *
+        progress;
+
+
+    function y(x){
+
+        const distance =
+            Math.abs(
+                x - CENTER
+            )
+            /
+            (
+                CENTER - LEFT
+            );
+
+        return SHEET_Y +
+               depth *
+               (1 - distance);
+    }
+
+
+    const top = [];
+
+    const bottom = [];
+
+    const segments = 100;
+
+
+    for(
+        let i = 0;
+        i <= segments;
+        i++
+    ){
+
+        const x =
+            LEFT +
+            (
+                RIGHT - LEFT
+            )
+            *
+            (
+                i / segments
+            );
+
+        top.push({
+            x:x,
+            y:y(x)
+        });
+
+    }
+
+
+    for(
+        let i = segments;
+        i >= 0;
+        i--
+    ){
+
+        const x =
+            LEFT +
+            (
+                RIGHT - LEFT
+            )
+            *
+            (
+                i / segments
+            );
+
+        bottom.push({
+
+            x:x,
+
+            y:
+                y(x)
+                +
+                THICKNESS
+
+        });
+
+    }
+
+
+    let d =
+        `M ${top[0].x} ${top[0].y}`;
+
+
+    for(
+        let i = 1;
+        i < top.length;
+        i++
+    ){
+
+        d +=
+            ` L ${top[i].x} ${top[i].y}`;
+
+    }
+
+
+    for(
+        const p of bottom
+    ){
+
+        d +=
+            ` L ${p.x} ${p.y}`;
+
+    }
+
+
+    d += " Z";
+
+
+    sheet.setAttribute(
+        "d",
+        d
+    );
+
+
+    let r = "";
+
+    const startX =
+        LEFT + 160;
+
+    const endX =
+        RIGHT - 160;
+
+
+    for(
+        let x = startX;
+        x <= endX;
+        x += 8
+    ){
+
+        if(
+            x === startX
+        ){
+
+            r =
+                `M ${x} ${y(x) + 6}`;
+
+        }else{
+
+            r +=
+                ` L ${x} ${y(x) + 6}`;
+
+        }
+
+    }
+
+
+    highlight.setAttribute(
+        "d",
+        r
+    );
+
+}
+
+
+/* =========================================================
+   STATO
+   ========================================================= */
+
+let startTime = null;
+
+let finished = false;
+
+
+/* =========================================================
+   ANIMAZIONE
+   ========================================================= */
+
+function animate(time){
+
+    if(
+        startTime === null
+    ){
+
+        startTime = time;
+
+    }
+
+
+    let elapsed =
+        time -
+        startTime;
+
+
+    if(
+        elapsed >=
+        TOTAL_DURATION
+    ){
+
+        elapsed =
+            TOTAL_DURATION;
+
+        finished = true;
+
+    }
+
+
+    const machineProgress =
+        Math.min(
+            1,
+            elapsed /
+            MACHINE_DURATION
+        );
+
+
+    const machineEase =
+        easeInOut(
+            machineProgress
+        );
+
+
+    drawSheet(
+        machineEase
+    );
+
+
+    const punchY =
+        PUNCH_DISTANCE *
+        machineEase;
+
+
+    punch.style.transform =
+        `translateY(${punchY}px)`;
+
+
+    const scale =
+        START_SCALE -
+
+        (
+            START_SCALE -
+            END_SCALE
+        )
+        *
+        machineEase;
+
+
+    machineScale.setAttribute(
+        "transform",
+        `scale(${scale})`
+    );
+
+
+    const moveX =
+        MOVE_RIGHT *
+        machineEase;
+
+
+    let shakeStrength = 0;
+
+
+    if(
+        elapsed <
+        MACHINE_DURATION
+    ){
+
+        shakeStrength =
+            Math.pow(
+                1 -
+                machineProgress,
+                1.5
+            );
+
+    }
+
+
+    const shakeX =
+
+        (
+
+            Math.sin(
+                time * .080
+            )
+            *
+            5.5
+
+            +
+
+            Math.sin(
+                time * .143
+            )
+            *
+            2.7
+
+            +
+
+            Math.sin(
+                time * .271
+            )
+            *
+            1.2
+
+        )
+        *
+        shakeStrength;
+
+
+    const shakeY =
+
+        (
+
+            Math.cos(
+                time * .095
+            )
+            *
+            4.5
+
+            +
+
+            Math.sin(
+                time * .183
+            )
+            *
+            1.8
+
+        )
+        *
+        shakeStrength;
+
+
+    const rotation =
+
+        Math.sin(
+            time * .115
+        )
+        *
+        .70
+        *
+        shakeStrength;
+
+
+    machine.setAttribute(
+
+        "transform",
+
+        `
+        translate(
+            ${moveX + shakeX}
+            ${shakeY}
+        )
+
+        rotate(
+            ${rotation}
+            700
+            600
+        )
+        `
+
+    );
+
+
+    highlight.style.opacity =
+        shakeStrength *
+        .45;
+
+
+    /* =====================================================
+       TITOLO
+       ===================================================== */
+
+    let titleProgress = 0;
+
+
+    if(
+        elapsed >=
+        TITLE_START
+    ){
+
+        titleProgress =
+            Math.min(
+
+                1,
+
+                (
+                    elapsed -
+                    TITLE_START
+                )
+                /
+                TITLE_DURATION
+
+            );
+
+    }
+
+
+    const titleEase =
+        easeInOut(
+            titleProgress
+        );
+
+
+    const titleY =
+        260 *
+        (
+            1 -
+            titleEase
+        );
+
+
+    let titleShakeX = 0;
+
+    let titleShakeY = 0;
+
+    let titleRotation = 0;
+
+
+    if(
+        titleProgress > 0 &&
+        titleProgress < 1
+    ){
+
+        const intensity =
+            1 -
+            titleProgress;
+
+
+        titleShakeX =
+
+            (
+
+                Math.sin(
+                    time * .115
+                )
+                *
+                14
+
+                +
+
+                Math.sin(
+                    time * .237
+                )
+                *
+                6
+
+                +
+
+                Math.sin(
+                    time * .371
+                )
+                *
+                3
+
+            )
+            *
+            intensity;
+
+
+        titleShakeY =
+
+            (
+
+                Math.cos(
+                    time * .127
+                )
+                *
+                9
+
+                +
+
+                Math.sin(
+                    time * .263
+                )
+                *
+                4
+
+            )
+            *
+            intensity;
+
+
+        titleRotation =
+
+            (
+
+                Math.sin(
+                    time * .131
+                )
+                *
+                1.8
+
+                +
+
+                Math.sin(
+                    time * .291
+                )
+                *
+                .7
+
+            )
+            *
+            intensity;
+
+    }
+
+
+    titleGroup.setAttribute(
+
+        "transform",
+
+        `
+        translate(
+            ${titleShakeX}
+            ${titleY + titleShakeY}
+        )
+
+        rotate(
+            ${titleRotation}
+            350
+            450
+        )
+        `
+
+    );
+
+
+    titleGroup.style.opacity =
+        titleEase;
+
+
+    /* =====================================================
+       STATO FINALE
+       ===================================================== */
+
+    if(
+        elapsed >=
+        TITLE_START +
+        TITLE_DURATION
+    ){
+
+        drawSheet(1);
+
+        punch.style.transform =
+            `translateY(${PUNCH_DISTANCE}px)`;
+
+
+        machineScale.setAttribute(
+            "transform",
+            `scale(${END_SCALE})`
+        );
+
+
+        machine.setAttribute(
+            "transform",
+            `translate(${MOVE_RIGHT} 0)`
+        );
+
+
+        highlight.style.opacity = 0;
+
+
+        titleGroup.setAttribute(
+            "transform",
+            "translate(0 0)"
+        );
+
+
+        titleGroup.style.opacity = 1;
+
+    }
+
+
+    /* =====================================================
+       FINE ESATTA
+       ===================================================== */
+
+    if(finished){
+
+        drawSheet(1);
+
+
+        punch.style.transform =
+            `translateY(${PUNCH_DISTANCE}px)`;
+
+
+        machineScale.setAttribute(
+            "transform",
+            `scale(${END_SCALE})`
+        );
+
+
+        machine.setAttribute(
+            "transform",
+            `translate(${MOVE_RIGHT} 0)`
+        );
+
+
+        titleGroup.setAttribute(
+            "transform",
+            "translate(0 0)"
+        );
+
+
+        titleGroup.style.opacity = 1;
+
+        highlight.style.opacity = 0;
+
+
+        document.body.classList.remove(
+            "scene-lock"
+        );
+
+
+        document.body.classList.add(
+            "scene-ready"
+        );
+
+
+        document.body.classList.add(
+            "content-revealed"
+        );
+
+
+        return;
+
+    }
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+/* =========================================================
+   AVVIO
+   ========================================================= */
+
+drawSheet(0);
+
+requestAnimationFrame(
+    animate
+);
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+if(
+    window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches
+){
+
+    drawSheet(1);
+
+
+    punch.style.transform =
+        `translateY(${PUNCH_DISTANCE}px)`;
+
+
+    machineScale.setAttribute(
+        "transform",
+        `scale(${END_SCALE})`
+    );
+
+
+    machine.setAttribute(
+        "transform",
+        `translate(${MOVE_RIGHT} 0)`
+    );
+
+
+    titleGroup.setAttribute(
+        "transform",
+        "translate(0 0)"
+    );
+
+
+    titleGroup.style.opacity = 1;
+
+
+    document.body.classList.remove(
+        "scene-lock"
+    );
+
+
+    document.body.classList.add(
+        "scene-ready"
+    );
+
+
+    document.body.classList.add(
+        "content-revealed"
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>

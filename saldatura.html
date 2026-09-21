@@ -1,0 +1,4100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Saldatura | INCATEC SRL</title>
+
+
+<style>
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    width:100%;
+    min-height:100%;
+
+    overflow-x:hidden;
+
+    background:#3a3a3a;
+
+    color:#111111;
+
+    font-family:
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        sans-serif;
+}
+
+
+/* =========================================================
+   BLOCCO INIZIALE
+   ========================================================= */
+
+/*
+   Nei primi 3 secondi:
+
+   - scroll bloccato
+   - tutto grigio
+   - header invisibile
+*/
+
+body.scene-lock{
+
+    width:100%;
+    height:100vh;
+
+    overflow:hidden;
+
+    background:#3a3a3a;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+  height:90px;
+  padding:0 1.5%;
+  background:rgba(255,255,255,.98);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:5000;
+  border-bottom:1px solid #e8e8e8;
+  box-shadow:0 5px 20px rgba(0,0,0,.04);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateY(-20px);
+  transition:
+    opacity .65s cubic-bezier(.22,1,.36,1),
+    transform .65s cubic-bezier(.22,1,.36,1),
+    visibility 0s linear .65s;
+}
+
+body.scene-lock header{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  position:absolute;
+  top:0;
+  left:0;
+  transform:translateY(-20px);
+  background:transparent;
+}
+
+body.scene-ready header{
+  position:sticky;
+  top:0;
+  left:auto;
+  z-index:5000;
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0);
+  background:rgba(255,255,255,.98);
+  border-bottom:1px solid #e8e8e8;
+  box-shadow:0 5px 20px rgba(0,0,0,.04);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transition:
+    opacity .65s cubic-bezier(.22,1,.36,1),
+    transform .65s cubic-bezier(.22,1,.36,1),
+    visibility 0s linear 0s;
+}
+
+.brand-logos{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  height:86px;
+}
+
+.brand-logos a{
+  display:flex;
+  align-items:center;
+  text-decoration:none;
+}
+
+.brand-logos img{
+  display:block;
+  width:auto;
+  object-fit:contain;
+  max-height:86px;
+}
+
+.brand-logos img:first-child{
+  height:86px;
+  max-width:250px;
+}
+
+.brand-logos img:last-child{
+  height:78px;
+  max-width:220px;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:38px;
+}
+
+nav > a,
+.menu-label{
+  position:relative;
+  text-decoration:none;
+  color:#111;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:font-weight .15s ease;
+}
+
+nav > a:hover,
+.menu-item:hover > .menu-label{
+  font-weight:700;
+}
+
+nav > a::after,
+.menu-label::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-8px;
+  width:100%;
+  height:2px;
+  background:#c61722;
+  transform:scaleX(0);
+  transform-origin:right;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+
+nav > a:hover::after,
+.menu-item:hover > .menu-label::after{
+  transform:scaleX(1);
+  transform-origin:left;
+}
+
+.menu-item{
+  position:relative;
+  height:90px;
+  display:flex;
+  align-items:center;
+}
+
+.dropdown{
+  position:absolute;
+  top:calc(100% - 1px);
+  left:50%;
+  transform:translateX(-50%);
+  width:285px;
+  background:#fff;
+  padding:8px 0;
+  border:0;
+  border-top:2px solid #c61722;
+  border-radius:0;
+  box-shadow:0 18px 40px rgba(0,0,0,.10);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .15s ease,visibility .15s ease;
+  z-index:6000;
+}
+
+.menu-item:hover .dropdown{
+  opacity:1;
+  visibility:visible;
+}
+
+.dropdown a{
+  display:block;
+  padding:12px 24px;
+  text-decoration:none;
+  color:#111;
+  background:#fff;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.07em;
+  transition:font-weight .15s ease;
+}
+
+.dropdown a:hover{
+  color:#111;
+  background:#fff;
+  font-weight:700;
+}
+
+/* =========================================================
+   SCENA CNC
+   ========================================================= */
+
+/*
+   IMPORTANTE:
+
+   All'inizio occupa il 100% della viewport.
+
+   Non esiste una fascia bianca sopra.
+
+   L'header è absolute e invisibile.
+*/
+
+.pagina{
+
+    position:relative;
+
+    z-index:10;
+
+    width:100%;
+
+    height:100vh;
+
+    min-height:600px;
+
+    overflow:hidden;
+
+    background:#3a3a3a;
+
+    transition:none;
+}
+
+
+/*
+   Durante la scena:
+   fullscreen.
+*/
+
+body.scene-lock .pagina{
+
+    width:100%;
+
+    height:100vh;
+}
+
+
+/*
+   Dopo la scena:
+   diventa la normale hero.
+
+   L'header compare sopra.
+*/
+
+body.scene-ready .pagina{
+    height:calc(100vh - 90px);
+}
+
+
+/* =========================================================
+   SVG
+   ========================================================= */
+
+.pagina svg{
+
+    display:block;
+
+    width:100%;
+    height:100vh;
+
+    overflow:hidden;
+
+    background:#3a3a3a;
+}
+
+
+/* =========================================================
+   MACCHINA
+   ========================================================= */
+
+#machineScale{
+
+    transform-origin:
+        700px 600px;
+}
+
+#machine{
+
+    transform-origin:
+        700px 600px;
+}
+
+#punch{
+
+    transform-origin:
+        700px 575px;
+}
+
+
+/* =========================================================
+   LAMIERA
+   ========================================================= */
+
+#sheet{
+
+    fill:#ed0011;
+}
+
+#highlight{
+
+    fill:none;
+
+    stroke:
+        rgba(
+            255,
+            255,
+            255,
+            .28
+        );
+
+    stroke-width:4;
+
+    stroke-linecap:round;
+}
+
+
+/* =========================================================
+   TITOLO
+   ========================================================= */
+
+#titleGroup{
+
+    opacity:0;
+
+    transform-origin:
+        350px 450px;
+}
+
+#title1,
+#title2{
+
+    fill:#ed0011;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:145px;
+
+    font-weight:900;
+
+    letter-spacing:-6px;
+}
+
+
+/* =========================================================
+   CONTENUTO
+   ========================================================= */
+
+.content{
+
+    position:relative;
+
+    z-index:20;
+
+    background:#fff;
+
+    opacity:0;
+
+    transform:translateY(35px);
+
+    transition:
+
+        opacity .65s ease,
+
+        transform .8s
+        cubic-bezier(.22,1,.36,1);
+}
+
+
+/*
+   Compare quando lo scroll viene sbloccato.
+*/
+
+body.content-revealed .content{
+
+    opacity:1;
+
+    transform:translateY(0);
+}
+
+
+/* =========================================================
+   CONTENITORE
+   ========================================================= */
+
+.cnc-page{
+
+    width:
+        min(
+            1320px,
+            calc(100% - 100px)
+        );
+
+    margin:0 auto;
+
+    padding-bottom:125px;
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.cnc-intro{
+
+    padding:
+        125px
+        0
+        70px;
+}
+
+.cnc-intro h2{
+
+    width:
+        min(
+            1000px,
+            100%
+        );
+
+    font-size:
+        clamp(
+            32px,
+            4vw,
+            58px
+        );
+
+    line-height:1.04;
+
+    letter-spacing:-.06em;
+
+    font-weight:400;
+}
+
+.cnc-intro h2 strong{
+
+    font-weight:700;
+}
+
+
+/* =========================================================
+   IMMAGINE PRINCIPALE
+   ========================================================= */
+
+.cnc-main-image{
+
+    position:relative;
+
+    width:100%;
+
+    height:
+        min(
+            680px,
+            52vw
+        );
+
+    min-height:420px;
+
+    overflow:hidden;
+
+    background:#eeeeee;
+}
+
+.cnc-main-image img{
+
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    object-fit:cover;
+
+    transition:
+
+        transform
+        1.1s
+        cubic-bezier(.2,.65,.2,1);
+}
+
+.cnc-main-image:hover img{
+
+    transform:scale(1.025);
+}
+
+
+/*
+   Etichetta immagine.
+*/
+
+.image-label{
+
+    position:absolute;
+
+    left:30px;
+    bottom:25px;
+
+    padding:
+        10px
+        13px;
+
+    background:#111;
+
+    color:#fff;
+
+    font-size:10px;
+
+    letter-spacing:.13em;
+
+    text-transform:uppercase;
+}
+
+
+/* =========================================================
+   DESCRIZIONE
+   ========================================================= */
+
+.cnc-description{
+
+    display:grid;
+
+    grid-template-columns:
+        .8fr
+        1.2fr;
+
+    gap:100px;
+
+    padding:
+        120px
+        0
+        110px;
+}
+
+.cnc-description h2{
+
+    max-width:430px;
+
+    font-size:
+        clamp(
+            42px,
+            4.5vw,
+            64px
+        );
+
+    line-height:.95;
+
+    letter-spacing:-.065em;
+
+    font-weight:400;
+}
+
+.cnc-description h2 strong{
+
+    font-weight:700;
+}
+
+.cnc-copy{
+
+    max-width:760px;
+}
+
+.cnc-copy p{
+
+    margin-bottom:25px;
+
+    color:#5f5f5f;
+
+    font-size:16px;
+
+    line-height:1.85;
+
+    font-weight:300;
+}
+
+.cnc-copy p:last-child{
+
+    margin-bottom:0;
+}
+
+
+/* =========================================================
+   EVIDENZA
+   ========================================================= */
+
+.cnc-highlight{
+
+    position:relative;
+
+    margin-top:40px;
+
+    padding:
+        23px
+        0
+        23px
+        22px;
+
+    border-top:
+        1px solid #dedede;
+
+    border-bottom:
+        1px solid #dedede;
+}
+
+.cnc-highlight::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:23px;
+    bottom:23px;
+
+    left:0;
+
+    width:3px;
+
+    background:#ed0011;
+}
+
+.cnc-highlight strong{
+
+    color:#111;
+
+    font-size:17px;
+
+    line-height:1.5;
+
+    font-weight:600;
+}
+
+
+/* =========================================================
+   DATI TECNICI
+   ========================================================= */
+
+.specifications{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    border-top:
+        1px solid #dedede;
+
+    border-bottom:
+        1px solid #dedede;
+}
+
+.specification{
+
+    min-height:280px;
+
+    padding:42px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    border-right:
+        1px solid #dedede;
+
+    transition:
+
+        background .35s ease,
+        color .35s ease;
+}
+
+.specification:last-child{
+
+    border-right:0;
+}
+
+.specification:hover{
+
+    background:#111;
+
+    color:#fff;
+}
+
+.specification small{
+
+    color:#777;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    letter-spacing:.16em;
+
+    text-transform:uppercase;
+}
+
+.specification:hover small{
+
+    color:#aaa;
+}
+
+.specification strong{
+
+    font-size:
+        clamp(
+            52px,
+            6vw,
+            82px
+        );
+
+    line-height:.85;
+
+    letter-spacing:-.08em;
+
+    font-weight:500;
+}
+
+.specification strong span{
+
+    margin-left:5px;
+
+    color:#777;
+
+    font-size:15px;
+
+    letter-spacing:0;
+
+    font-weight:400;
+}
+
+.specification:hover strong span{
+
+    color:#aaa;
+}
+
+
+/* =========================================================
+   GALLERY IMMAGINI — SALDATURA
+   Due immagini affiancate e perfettamente centrate
+   subito sotto la prima descrizione introduttiva.
+   ========================================================= */
+
+.welding-photo-gallery{
+    width:min(1180px,100%);
+    margin:0 auto;
+    padding:0 0 120px;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:32px;
+    align-items:stretch;
+}
+
+.welding-photo{
+    position:relative;
+    width:100%;
+    height:520px;
+    margin:0;
+    overflow:hidden;
+    background:#eeeeee;
+    isolation:isolate;
+}
+
+.welding-photo::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border:1px solid rgba(0,0,0,.08);
+    pointer-events:none;
+    z-index:2;
+}
+
+.welding-photo img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center center;
+    transform:scale(1.001);
+    transition:transform 1s cubic-bezier(.2,.65,.2,1);
+}
+
+.welding-photo:hover img{
+    transform:scale(1.035);
+}
+
+@media(max-width:1000px){
+    .welding-photo-gallery{
+        width:100%;
+        padding-bottom:100px;
+        gap:22px;
+    }
+
+    .welding-photo{
+        height:430px;
+    }
+}
+
+@media(max-width:700px){
+    .welding-photo-gallery{
+        grid-template-columns:1fr;
+        gap:18px;
+        padding-bottom:75px;
+    }
+
+    .welding-photo{
+        height:330px;
+    }
+}
+
+/* =========================================================
+   PROCESSO
+   ========================================================= */
+
+.cnc-process{
+
+    padding:
+        0
+        0
+        120px;
+}
+
+.cnc-process-head{
+
+    display:grid;
+
+    grid-template-columns:
+        .8fr
+        1.2fr;
+
+    gap:100px;
+
+    padding-bottom:45px;
+
+    border-bottom:
+        1px solid #dedede;
+}
+
+.cnc-process-head h2{
+
+    font-size:
+        clamp(
+            42px,
+            5vw,
+            68px
+        );
+
+    line-height:.92;
+
+    letter-spacing:-.07em;
+
+    font-weight:400;
+}
+
+.cnc-process-head h2 strong{
+
+    font-weight:700;
+}
+
+.cnc-process-head p{
+
+    max-width:650px;
+
+    color:#666;
+
+    font-size:16px;
+
+    line-height:1.8;
+}
+
+
+/* =========================================================
+   PROCESSI
+   ========================================================= */
+
+.cnc-process-list{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+}
+
+.cnc-process-item{
+
+    min-height:230px;
+
+    padding:
+        40px;
+
+    border-right:
+        1px solid #dedede;
+
+    border-bottom:
+        1px solid #dedede;
+
+    transition:
+
+        background .35s ease,
+        color .35s ease;
+}
+
+.cnc-process-item:last-child{
+
+    border-right:0;
+}
+
+.cnc-process-item:hover{
+
+    background:#111;
+
+    color:#fff;
+}
+
+.cnc-process-item h3{
+
+    margin-bottom:18px;
+
+    font-size:24px;
+
+    line-height:1;
+
+    letter-spacing:-.04em;
+}
+
+.cnc-process-item p{
+
+    color:#666;
+
+    font-size:14px;
+
+    line-height:1.7;
+}
+
+.cnc-process-item:hover p{
+
+    color:#aaa;
+}
+
+
+/* =========================================================
+   IMMAGINE FINALE
+   ========================================================= */
+
+.cnc-final-image{
+
+    width:100%;
+
+    height:
+        min(
+            600px,
+            50vw
+        );
+
+    min-height:350px;
+
+    overflow:hidden;
+
+    background:#eee;
+}
+
+.cnc-final-image img{
+
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    object-fit:cover;
+
+    transition:
+
+        transform
+        1.1s
+        cubic-bezier(.2,.65,.2,1);
+}
+
+.cnc-final-image:hover img{
+
+    transform:scale(1.025);
+}
+
+
+/* ==================================================
+   FOOTER / CONTATTI
+   Più compatto e proporzionato
+================================================== */
+
+.footer{
+  width:100%;
+  margin-top:0;
+  background:#3a3a3a;
+  color:#fff;
+
+  /* barra più sottile */
+  padding:27px 5%;
+  min-height:165px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.footer-inner{
+  width:100%;
+  max-width:1320px;
+
+  /* tre colonne identiche */
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  /* spazio ravvicinato tra le colonne */
+  gap:28px;
+
+  align-items:start;
+  justify-items:center;
+  text-align:center;
+}
+
+
+/* ==================================================
+   COLONNE FOOTER
+================================================== */
+
+.footer-column{
+  width:100%;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  text-align:center;
+}
+
+
+/* ==================================================
+   TITOLI
+   Tutti sulla stessa identica altezza
+================================================== */
+
+.footer h3{
+  width:100%;
+  height:25px;
+
+  margin:0 0 9px 0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  /* caratteri leggermente più grandi */
+  font-size:20px;
+
+  font-weight:500;
+
+  line-height:25px;
+
+  letter-spacing:-.035em;
+}
+
+
+/* ==================================================
+   TESTI
+   Più grandi ma ravvicinati
+================================================== */
+
+.footer-column,
+.footer-column p,
+.footer-column a{
+  color:#c4c4c4;
+
+  font-size:14px;
+
+  line-height:1.42;
+
+  font-weight:400;
+
+  letter-spacing:-.01em;
+}
+
+.footer-column p{
+  margin-bottom:3px;
+}
+
+.footer-column a{
+  text-decoration:none;
+}
+
+.footer-column a:hover{
+  color:#fff;
+}
+
+
+/* Nessun logo nel footer */
+
+.footer-logos{
+  display:none;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:1000px){
+
+    .cnc-page{
+
+        width:
+            min(
+                100% - 50px,
+                800px
+            );
+    }
+
+
+    .cnc-description,
+    .cnc-editorial,
+    .cnc-process-head{
+
+        grid-template-columns:1fr;
+
+        gap:50px;
+    }
+
+
+    .specifications{
+
+        grid-template-columns:1fr;
+    }
+
+
+    .specification{
+
+        border-right:0;
+
+        border-bottom:
+            1px solid #dedede;
+    }
+
+
+    .specification:last-child{
+
+        border-bottom:0;
+    }
+
+
+    .cnc-process-list{
+
+        grid-template-columns:1fr;
+    }
+
+
+    .cnc-process-item{
+
+        border-right:0;
+    }
+
+
+    .footer-inner{
+
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:700px){
+
+    .welding-specs{grid-template-columns:1fr;}
+
+    header{
+
+        height:70px;
+
+        padding:
+            0 20px;
+    }
+
+
+    .brand-logos{
+
+        height:55px;
+
+        gap:10px;
+    }
+
+
+    .brand-logos img:first-child{
+
+        height:50px;
+
+        max-width:130px;
+    }
+
+
+    .brand-logos img:last-child{
+
+        height:44px;
+
+        max-width:105px;
+    }
+
+
+    nav{
+
+        display:none;
+    }
+
+
+    .pagina{
+        height:100vh;
+        min-height:580px;
+    }
+
+
+    body.scene-lock .pagina{
+
+        height:100vh;
+    }
+
+
+    body.scene-ready .pagina{
+        height:calc(100vh - 70px);
+    }
+
+    .pagina svg{
+        height:100vh;
+    }
+
+
+    .cnc-page{
+
+        width:
+            calc(
+                100% - 40px
+            );
+    }
+
+
+    .cnc-intro{
+
+        padding:
+            75px
+            0
+            45px;
+    }
+
+
+    .cnc-intro h2{
+
+        font-size:
+            clamp(
+                30px,
+                8.5vw,
+                48px
+            );
+    }
+
+
+    .cnc-main-image{
+
+        height:58vw;
+
+        min-height:310px;
+    }
+
+
+    .cnc-description,
+    .cnc-editorial{
+
+        padding:
+            75px
+            0;
+    }
+
+
+    .cnc-secondary-image{
+
+        height:430px;
+    }
+
+
+    .cnc-process{
+
+        padding-bottom:75px;
+    }
+
+
+    .cnc-final-image{
+
+        height:58vw;
+
+        min-height:310px;
+    }
+
+
+    .footer{
+
+        min-height:auto;
+
+        padding:
+            40px
+            25px
+            35px;
+    }
+
+
+    .footer-inner{
+
+        grid-template-columns:1fr;
+
+        gap:30px;
+    }
+
+
+    .footer-logos{
+
+        flex-direction:row;
+
+        align-items:center;
+
+        gap:15px;
+    }
+
+
+    .footer-logos img:first-child{
+
+        height:60px;
+
+        max-width:150px;
+    }
+
+
+    .footer-logos img:last-child{
+
+        height:54px;
+
+        max-width:135px;
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITÀ
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+
+        animation-duration:.01ms !important;
+
+        transition-duration:.01ms !important;
+    }
+
+}
+
+</style>
+
+
+<style>
+/* =========================================================
+   SALDATURA — INTEGRATION OVERRIDES
+   La struttura, header, menu e footer restano quelli del
+   secondo codice. Questa parte sostituisce solo la scena
+   iniziale e il contenuto della lavorazione.
+   ========================================================= */
+
+body{
+    background:#3a3a3a;
+    color:#111;
+}
+
+body.scene-lock{
+    height:100vh;
+    overflow:hidden;
+    background:#3a3a3a;
+}
+
+/* Header identico nel comportamento al secondo codice */
+body.scene-lock header{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    position:absolute;
+}
+
+body.scene-ready header{
+    position:sticky;
+    top:0;
+    z-index:5000;
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+/* =========================================================
+   SCENA INTRO
+   ========================================================= */
+
+.welding-stage{
+    position:relative;
+    z-index:10;
+    width:100%;
+    height:100vh;
+    min-height:600px;
+    overflow:hidden;
+    background:#3a3a3a;
+}
+
+body.scene-lock .welding-stage{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100vh;
+    z-index:90;
+}
+
+.welding-stage svg{
+    width:100%;
+    height:100%;
+    display:block;
+    overflow:hidden;
+    background:#3a3a3a;
+}
+
+#fx{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:3;
+}
+
+#weldingSvg #torch{
+    transform-box:fill-box;
+    transform-origin:50% 50%;
+    transition:opacity .65s ease;
+}
+
+/* =========================================================
+   TITOLO
+   ========================================================= */
+
+#weldingTitle{
+
+    position:absolute;
+
+    left:30%;
+
+    top:50%;
+
+    z-index:8;
+
+    transform:translateY(-50%) translateX(-30px);
+
+    color:#ed0011;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size:
+        clamp(48px,
+              7.2vw,
+              112px);
+
+    line-height:.82;
+
+    font-weight:900;
+
+    letter-spacing:-.075em;
+
+    white-space:nowrap;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        opacity .45s ease,
+        transform .75s cubic-bezier(.22,1,.36,1);
+}
+
+
+
+/* =========================================================
+   APERTURA PAGINA
+   ========================================================= */
+
+body.scene-ready .welding-stage{
+    position:relative;
+    inset:auto;
+    z-index:10;
+    height:calc(100vh - 90px);
+    min-height:600px;
+}
+
+.welding-content{
+    position:relative;
+    z-index:20;
+    background:#fff;
+    opacity:0;
+    transform:translateY(35px);
+    transition:
+        opacity .65s ease,
+        transform .8s cubic-bezier(.22,1,.36,1);
+}
+
+body.content-revealed .welding-content{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.welding-page{
+    width:min(1320px,calc(100% - 100px));
+    margin:0 auto;
+    padding-bottom:125px;
+}
+
+/* =========================================================
+   HERO EDITORIALE
+   ========================================================= */
+
+.welding-intro{
+    padding:125px 0 70px;
+}
+
+.welding-intro h2{
+    width:min(1000px,100%);
+    font-size:clamp(32px,4vw,58px);
+    line-height:1.04;
+    letter-spacing:-.06em;
+    font-weight:400;
+}
+
+.welding-intro h2 strong{
+    font-weight:700;
+}
+
+/* =========================================================
+   DESCRIZIONE
+   ========================================================= */
+
+.welding-description{
+    display:grid;
+    grid-template-columns:.8fr 1.2fr;
+    gap:100px;
+    padding:120px 0 110px;
+    border-top:1px solid #dedede;
+}
+
+.welding-description h2{
+    max-width:430px;
+    font-size:clamp(42px,4.5vw,64px);
+    line-height:.95;
+    letter-spacing:-.065em;
+    font-weight:400;
+}
+
+.welding-description h2 strong{
+    font-weight:700;
+}
+
+.welding-copy{
+    max-width:760px;
+}
+
+.welding-copy p{
+    margin-bottom:25px;
+    color:#5f5f5f;
+    font-size:16px;
+    line-height:1.85;
+    font-weight:300;
+}
+
+.welding-highlight{
+    position:relative;
+    margin-top:40px;
+    padding:23px 0 23px 22px;
+    border-top:1px solid #dedede;
+    border-bottom:1px solid #dedede;
+}
+
+.welding-highlight:before{
+    content:"";
+    position:absolute;
+    top:23px;
+    bottom:23px;
+    left:0;
+    width:3px;
+    background:#ed0011;
+}
+
+.welding-highlight strong{
+    font-size:17px;
+    line-height:1.5;
+    font-weight:600;
+}
+
+/* =========================================================
+   DATI / MATERIALI
+   ========================================================= */
+
+.welding-specs-section{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:70px;
+    align-items:center;
+    padding:35px 0 120px;
+}
+
+.welding-specs-heading{
+    grid-column:1;
+    padding:0;
+}
+
+.welding-specs-heading h2{
+    max-width:650px;
+    width:auto;
+    margin:35px 0 0;
+    font-size:clamp(45px,5vw,90px);
+    line-height:.88;
+    letter-spacing:-.075em;
+    font-weight:400;
+}
+
+.welding-specs-heading h2 strong{font-weight:700;}
+
+.welding-specs{
+    grid-column:2;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+    margin-left:0;
+    border-top:1px solid #dedede;
+    border-bottom:1px solid #dedede;
+}
+
+.welding-spec{
+    min-height:300px;
+    padding:42px 32px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-right:1px solid #dedede;
+    transition:background .35s ease,color .35s ease;
+}
+.welding-spec:last-child{border-right:0;}
+.welding-spec:hover{background:#111;color:#fff;}
+.welding-spec .spec-label{
+    display:block; color:#777; font-size:11px; font-weight:700;
+    letter-spacing:.16em; text-transform:uppercase;
+}
+.welding-spec:hover .spec-label{color:#aaa;}
+.welding-spec h3{
+    margin:45px 0 25px; font-size:clamp(32px,3.5vw,55px);
+    line-height:.88; letter-spacing:-.075em; font-weight:500;
+}
+.welding-spec h3 span{
+    display:block; margin-top:9px; color:#777; font-size:18px;
+    letter-spacing:-.02em; font-weight:400;
+}
+.welding-spec:hover h3 span{color:#aaa;}
+.welding-spec p{margin:0;color:#666;font-size:14px;line-height:1.7;}
+.welding-spec:hover p{color:#aaa;}
+
+/* =========================================================
+   PROCESSO
+   ========================================================= */
+
+.welding-process{
+    padding:0 0 120px;
+}
+
+.welding-process-head{
+    display:grid;
+    grid-template-columns:.8fr 1.2fr;
+    gap:100px;
+    padding-bottom:45px;
+    border-bottom:1px solid #dedede;
+}
+
+.welding-process-head h2{
+    font-size:clamp(42px,5vw,68px);
+    line-height:.92;
+    letter-spacing:-.07em;
+    font-weight:400;
+}
+
+.welding-process-head h2 strong{
+    font-weight:700;
+}
+
+.welding-process-head p{
+    max-width:650px;
+    color:#666;
+    font-size:16px;
+    line-height:1.8;
+    font-weight:300;
+}
+
+.welding-process-list{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+}
+
+.welding-process-item{
+    min-height:270px;
+    padding:40px 32px;
+    border-right:1px solid #dedede;
+    border-bottom:1px solid #dedede;
+    transition:background .35s ease,color .35s ease;
+}
+
+.welding-process-item:last-child{
+    border-right:0;
+}
+
+.welding-process-item:hover{
+    background:#111;
+    color:#fff;
+}
+
+.welding-process-item .number{
+    display:block;
+    margin-bottom:55px;
+    color:#ed0011;
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:.15em;
+}
+
+.welding-process-item h3{
+    margin-bottom:18px;
+    font-size:24px;
+    line-height:1;
+    letter-spacing:-.04em;
+}
+
+.welding-process-item p{
+    color:#666;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.welding-process-item:hover p{
+    color:#aaa;
+}
+
+/* =========================================================
+   CHIUSURA
+   ========================================================= */
+
+.welding-final{
+    min-height:450px;
+    display:flex;
+    align-items:center;
+    padding:60px;
+    background:#3a3a3a;
+    color:#fff;
+}
+
+.welding-final h2{
+    max-width:900px;
+    font-size:clamp(42px,6vw,82px);
+    line-height:.9;
+    letter-spacing:-.07em;
+    font-weight:400;
+}
+
+.welding-final strong{
+    color:#ed0011;
+    font-weight:800;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:1000px){
+
+    .welding-description,
+    .welding-process-head{
+        grid-template-columns:1fr;
+        gap:50px;
+    }
+
+    .welding-specs-section{
+        grid-template-columns:1fr;
+        row-gap:55px;
+        padding:0 0 120px;
+    }
+
+    .welding-specs-heading{grid-column:1;padding:0;}
+
+    .welding-specs-heading h2{margin:35px 0 0;}
+
+    .welding-specs{grid-column:1;grid-template-columns:1fr 1fr;width:100%;margin-left:0;}
+
+    .welding-process-list{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .welding-process-item:nth-child(2n){
+        border-right:0;
+    }
+
+}
+
+@media(max-width:700px){
+
+    body.scene-ready .welding-stage{
+        height:calc(100vh - 70px);
+        min-height:560px;
+    }
+
+    .welding-stage{
+        min-height:560px;
+    }
+
+    #weldingTitle{
+        width:90%;
+        white-space:normal;
+        text-align:center;
+        font-size:15vw;
+        transform:translate(-50%,-50%);
+    }
+
+    .welding-page{
+        width:calc(100% - 40px);
+    }
+
+    .welding-intro{
+        padding:75px 0 45px;
+    }
+
+    .welding-description{
+        padding:75px 0;
+    }
+
+    .welding-materials-text{
+        grid-template-columns:1fr;
+        gap:35px;
+        padding-bottom:75px;
+    }
+
+    .welding-specs-heading{
+        grid-column:1;
+        padding:0;
+    }
+
+    .welding-specs-heading h2{
+        width:auto;
+        margin:35px 0 0;
+        max-width:100%;
+        font-size:clamp(54px,13vw,88px);
+    }
+
+    .welding-process-list{
+        grid-template-columns:1fr;
+    }
+
+    .welding-process-item{
+        border-right:0;
+        border-bottom:1px solid #dedede;
+    }
+
+    .welding-process-item:last-child{
+        border-bottom:0;
+    }
+.welding-process{
+        padding-bottom:75px;
+    }
+
+    .welding-final{
+        min-height:350px;
+        padding:40px 25px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    #weldingTitle,
+    .welding-content,
+    header{
+        transition:none !important;
+    }
+
+}
+
+/* Aggiornamento layout saldatura */
+.welding-materials-text {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    align-items: center;
+    column-gap: 8vw;
+}
+.welding-materials-intro {
+    grid-column: 1;
+    justify-self: start;
+    width: min(100%, 650px);
+    text-align: left;
+    margin-top:35px;
+}
+.welding-materials-intro h2 {
+    font-size: clamp(24px, 2.5vw, 38px) !important;
+    line-height: .92;
+    margin: 0;
+}
+.welding-materials-copy {
+    grid-column: 1 / -1;
+}
+.welding-specs {
+    text-align: center;
+    width:50%;
+    margin-left:auto;
+}
+.welding-spec {
+    text-align: center !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.welding-spec .eyebrow, .welding-spec .label {
+    display: none;
+}
+.welding-spec h3, .welding-spec p {
+    text-align: center !important;
+}
+@media (max-width: 1000px) {
+    .welding-materials-text { grid-template-columns: 1fr; }
+    .welding-materials-intro { grid-column: 1; justify-self: start; margin-top:35px; }
+    .welding-materials-copy { grid-column: 1; }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   MATERIALI — CASELLE PROPORZIONATE AL RIFERIMENTO
+   ========================================================= */
+.welding-specs-section{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:0;
+    align-items:center;
+    padding:0 0 120px;
+}
+
+.welding-specs-heading{
+    grid-column:1;
+    padding:0 50px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:600px;
+}
+
+.welding-specs-heading h2{
+    max-width:560px;
+    width:auto;
+    margin:40px 0 0;
+    font-size:clamp(45px,5vw,90px);
+    line-height:.88;
+    letter-spacing:-.075em;
+    font-weight:400;
+}
+
+.welding-specs-heading h2 strong{font-weight:700;}
+
+.welding-specs{
+    grid-column:2;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+    height:350px;
+    margin:0;
+    border-top:1px solid #dedede;
+    border-bottom:1px solid #dedede;
+}
+
+.welding-spec{
+    height:350px;
+    min-height:0;
+    padding:42px 28px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center !important;
+    border-right:1px solid #dedede;
+    transition:background .35s ease,color .35s ease;
+}
+
+.welding-spec:last-child{border-right:0;}
+.welding-spec:hover{background:#111;color:#fff;}
+.welding-spec .spec-label{display:none;}
+
+.welding-spec h3{
+    margin:0;
+    font-size:clamp(30px,5vw,60px);
+    line-height:.86;
+    letter-spacing:-.075em;
+    font-weight:700;
+    text-align:center !important;
+}
+
+.welding-spec h3 span{
+    display:block;
+    margin-top:14px;
+    color:#777;
+    font-size:clamp(20px,2vw,30px);
+    line-height:1;
+    letter-spacing:-.03em;
+    font-weight:400;
+}
+
+.welding-spec:hover h3 span{color:#aaa;}
+
+/* Nessuna riga sopra “Quattro processi.” */
+.welding-process{border-top:0 !important;}
+
+@media(max-width:1000px){
+    .welding-specs-section{
+        width:100%;
+        margin-left:0;
+        grid-template-columns:1fr;
+        row-gap:55px;
+        padding:0 0 120px;
+    }
+
+    .welding-specs-heading{
+        grid-column:1;
+        min-height:0;
+        padding:0;
+    }
+
+    .welding-specs-heading h2{margin:35px 0 0;}
+
+    .welding-specs{
+        grid-column:1;
+        grid-template-columns:1fr 1fr;
+        width:100%;
+        height:420px;
+        margin:0;
+    }
+
+    .welding-spec{height:420px;min-height:0;}
+}
+
+@media(max-width:700px){
+    .welding-specs{grid-template-columns:1fr;height:auto;}
+    .welding-spec{
+        height:310px;
+        min-height:310px;
+        border-right:0;
+        border-bottom:1px solid #dedede;
+    }
+    .welding-spec:last-child{border-bottom:0;}
+    .welding-specs-heading h2{margin:35px 0 0;}
+    .welding-spec h3{font-size:clamp(54px,13vw,88px);}
+    .welding-spec h3 span{font-size:clamp(22px,6vw,30px);}
+}
+
+/* =========================================================
+   FINAL POLISH — SALDATURA
+   Process cards with dedicated visuals
+   ========================================================= */
+
+/* “Cosa saldiamo” più vicino all'immagine e più compatto */
+.welding-specs-section{
+    padding-top:0 !important;
+    margin-top:-12px;
+}
+
+
+.welding-specs-heading{
+    min-height:500px;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+}
+
+.welding-specs-heading h2{
+    margin:0 !important;
+}
+
+.welding-cosa-image{
+    width:min(100%,560px);
+    height:270px;
+    margin:38px 0 0 !important;
+    overflow:hidden;
+    background:#ececec;
+}
+
+.welding-cosa-image img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    transition:transform .8s cubic-bezier(.2,.65,.2,1);
+}
+
+.welding-cosa-image:hover img{
+    transform:scale(1.025);
+}
+
+/* Cards dei processi: immagine ordinata sotto le informazioni */
+.welding-process-list{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    border-left:1px solid #dedede;
+}
+
+.welding-process-item{
+    min-height:500px;
+    padding:34px 28px 26px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-right:1px solid #dedede;
+    border-bottom:1px solid #dedede;
+    transition:background .35s ease,color .35s ease;
+}
+
+.welding-process-item:last-child{
+    border-right:0;
+}
+
+.welding-process-item:hover{
+    background:#111;
+    color:#fff;
+}
+
+.process-content{
+    flex:1 1 auto;
+}
+
+.welding-process-item .number{
+    display:block;
+    margin-bottom:42px;
+    color:#ed0011;
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:.13em;
+    line-height:1.2;
+}
+
+.welding-process-item h3{
+    margin-bottom:16px;
+    font-size:26px;
+    line-height:1;
+    letter-spacing:-.045em;
+}
+
+.welding-process-item p{
+    max-width:280px;
+    color:#666;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.welding-process-item:hover p{
+    color:#aaa;
+}
+
+.process-image{
+    position:relative;
+    width:100%;
+    height:205px;
+    margin:30px 0 0;
+    overflow:hidden;
+    background:#f6f6f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.process-image::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border:1px solid rgba(0,0,0,.06);
+    pointer-events:none;
+    z-index:1;
+}
+
+.process-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+    object-position:center;
+    transition:transform .7s cubic-bezier(.2,.65,.2,1);
+}
+
+.welding-process-item:hover .process-image img{
+    transform:scale(1.025);
+}
+
+@media(max-width:1100px){
+    .welding-process-list{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .welding-process-item:nth-child(2n){
+        border-right:0;
+    }
+
+    .welding-process-item{
+        min-height:470px;
+    }
+}
+
+@media(max-width:1000px){
+    .welding-main-photo{
+        margin-bottom:60px;
+    }
+
+    .welding-main-photo .welding-photo{
+        height:55vw;
+        min-height:360px;
+    }
+
+    .welding-specs-section{
+        margin-top:0;
+    }
+
+    .welding-specs-heading{
+        min-height:0;
+    }
+
+    .welding-process-list{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        border-left:0;
+    }
+
+    .welding-process-item{
+        min-height:460px;
+    }
+}
+
+@media(max-width:700px){
+    .welding-specs-heading{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+    }
+
+    .welding-cosa-image{
+        height:260px;
+        margin-top:25px !important;
+    }
+
+    .welding-main-photo{
+        margin-bottom:46px;
+    }
+
+    .welding-main-photo .welding-photo{
+        height:58vw;
+        min-height:300px;
+    }
+
+    .welding-main-photo .welding-photo figcaption{
+        left:16px;
+        bottom:16px;
+        font-size:9px;
+    }
+
+    .welding-specs-section{
+        padding-bottom:80px !important;
+    }
+
+    .welding-process-list{
+        grid-template-columns:1fr;
+        border-left:0;
+    }
+
+    .welding-process-item{
+        min-height:0;
+        padding:34px 24px 24px;
+        border-right:0 !important;
+    }
+
+    .process-image{
+        height:240px;
+        margin-top:34px;
+    }
+}
+
+</style>
+
+</head>
+<body class="scene-lock">
+<header>
+
+    <div class="brand-logos">
+
+        <a href="./index.html">
+
+            <img
+                src="Logo1.jpg"
+                alt="INCATEC SRL">
+
+        </a>
+
+
+        <a href="./index.html">
+
+            <img
+                src="Logo2.jpg"
+                alt="GH Saldature">
+
+        </a>
+
+    </div>
+
+
+    <nav>
+
+        <a href="./index.html">
+            Home
+        </a>
+
+
+        <div class="menu-item">
+
+            <span class="menu-label">
+                Servizi
+            </span>
+
+            <div class="dropdown">
+
+                <a href="./montaggio.html">
+                    MONTAGGIO
+                </a>
+
+                <a href="./manodopera.html">
+                    PRESTAZIONE DI MANODOPERA
+                </a>
+
+                <a href="./intervento-tecnico.html">
+                    INTERVENTO TECNICO
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="menu-item">
+
+            <span class="menu-label">
+                Lavorazioni
+            </span>
+
+            <div class="dropdown">
+
+                <a href="./taglio-laser.html">
+                    TAGLIO LASER
+                </a>
+
+                <a href="./piegatura.html">
+                    PIEGATURA
+                </a>
+
+                <a href="./saldatura.html">
+                    SALDATURA
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <a href="./contatti.html">
+            Contatti
+        </a>
+
+    </nav>
+
+</header>
+
+<section class="welding-stage" id="weldingStage" aria-label="Animazione introduttiva della saldatura">
+<svg
+    viewBox="0 0 1170 1032"
+    xmlns="http://www.w3.org/2000/svg"
+>
+
+
+<!-- =====================================================
+     LAMIERA SINISTRA
+     ===================================================== -->
+
+<g id="animationVisual" transform="translate(300 0)">
+
+<g id="leftSheet">
+
+    <path
+        d="
+            M60 820
+            L430 820
+
+            L470 868
+
+            L470 915
+
+            L60 915
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+    <!-- bordo -->
+    <path
+        d="
+            M60 820
+            L430 820
+            L470 868
+        "
+
+        fill="none"
+
+        stroke="#a9000d"
+        stroke-width="5"
+    />
+
+</g>
+
+
+<!-- =====================================================
+     LAMIERA DESTRA
+     ===================================================== -->
+
+<g id="rightSheet">
+
+    <path
+        d="
+            M1100 820
+
+            L546 820
+
+            L506 868
+
+            L506 915
+
+            L1100 915
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+    <!-- bordo -->
+
+    <path
+        d="
+            M1100 820
+            L546 820
+            L506 868
+        "
+
+        fill="none"
+
+        stroke="#a9000d"
+
+        stroke-width="5"
+    />
+
+</g>
+
+
+<!-- =====================================================
+     GIUNZIONE DOPO L'AVVICINAMENTO
+     ===================================================== -->
+
+<path
+    id="weldSeam"
+
+    d="
+        M470 868
+        L506 868
+    "
+
+    stroke="#850009"
+
+    stroke-width="8"
+
+    stroke-linecap="round"
+
+    opacity="0"
+/>
+
+
+<!-- =====================================================
+     TORCIA
+     ===================================================== -->
+
+<g id="torch">
+
+
+    <!-- cavo -->
+
+    <path
+        d="
+            M1040 150
+
+            C1120 135
+            1160 140
+            1210 150
+        "
+
+        fill="none"
+
+        stroke="#e30613"
+
+        stroke-width="58"
+
+        stroke-linecap="round"
+    />
+
+
+    <!-- impugnatura -->
+
+    <path
+        d="
+            M1020 125
+
+            L1068 110
+
+            L1080 225
+
+            L1035 240
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+
+    <!-- corpo -->
+
+    <path
+        d="
+            M720 210
+
+            L1025 100
+
+            Q1050 92
+            1058 115
+
+            L1074 205
+
+            Q1078 225
+            1058 237
+
+            L765 340
+
+            Q745 347
+            739 328
+
+            L710 226
+
+            Q706 216
+            720 210
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+
+    <!-- collo -->
+
+    <path
+        d="
+            M720 270
+
+            C650 280
+            610 315
+            590 390
+        "
+
+        fill="none"
+
+        stroke="#e30613"
+
+        stroke-width="55"
+
+        stroke-linecap="round"
+    />
+
+
+    <!-- raccordo -->
+
+    <path
+        d="
+            M560 405
+
+            L625 425
+
+            L650 475
+
+            L570 490
+
+            L535 445
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+
+    <!-- parte anteriore -->
+
+    <path
+        d="
+            M555 465
+
+            L630 485
+
+            L570 680
+
+            Q565 700
+            545 696
+
+            L505 684
+
+            Q488 680
+            492 662
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+
+    <!-- punta -->
+
+    <path
+        d="
+            M505 680
+
+            L548 692
+
+            L508 868
+
+            L480 868
+
+            Z
+        "
+
+        fill="#e30613"
+    />
+
+</g>
+
+</g>
+
+</svg>
+<canvas id="fx"></canvas>
+<div id="weldingTitle">SALDATURA</div>
+</section>
+
+
+<main class="welding-content">
+
+<div class="welding-page">
+
+<section class="welding-description">
+
+    <div>
+        <h2>
+            <strong>Saldatura</strong> di precisione
+            per giunzioni affidabili e di qualità.
+        </h2>
+    </div>
+
+    <div class="welding-copy">
+
+        <p>
+            La lavorazione della saldatura richiede attenzione nella preparazione,
+            nel controllo dell'esecuzione e nella scelta della tecnologia più adatta
+            alle caratteristiche del materiale e alla geometria del componente.
+            L'obiettivo è ottenere giunzioni affidabili, uniformi e coerenti con
+            le esigenze della lavorazione industriale.
+        </p>
+
+        <p>
+            Le lavorazioni riguardano <strong>acciaio INOX</strong> e
+            <strong>acciaio al carbonio</strong>. Per rispondere alle diverse esigenze
+            produttive vengono impiegati processi come <strong>MIG/MAG</strong> e
+            <strong>TIG</strong>, affiancati da <strong>arco sommerso</strong> e
+            <strong>plasma</strong> per applicazioni specifiche.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="welding-photo-gallery" aria-label="Lavorazioni di saldatura">
+
+    <figure class="welding-photo welding-photo-left">
+        <img
+            src="Saldatura1.png"
+            alt="Operatore durante una lavorazione di saldatura industriale"
+            loading="eager"
+            decoding="async"
+        >
+    </figure>
+
+    <figure class="welding-photo welding-photo-right">
+        <img
+            src="Saldatura2.png"
+            alt="Operatore durante una lavorazione di saldatura TIG su componente metallico"
+            loading="eager"
+            decoding="async"
+        >
+    </figure>
+
+</section>
+
+
+<section class="welding-specs-section">
+
+   <div class="welding-specs-heading">
+    <h2><strong>Cosa</strong> saldiamo</h2>
+
+    <figure class="welding-cosa-image">
+        <img
+            src="Saldatura3.png"
+            alt="Componenti metallici predisposti per la lavorazione di saldatura"
+            loading="lazy"
+            decoding="async"
+        >
+    </figure>
+</div>
+
+    <div class="welding-specs">
+
+        <article class="welding-spec">
+            <span class="spec-label"></span>
+            <h3>Acciaio <span>INOX</span></h3>
+        </article>
+
+        <article class="welding-spec">
+            <span class="spec-label"></span>
+            <h3>Acciaio <span>al carbonio</span></h3>
+        </article>
+
+    </div>
+
+</section>
+
+
+<section class="welding-process">
+
+   <div class="welding-process-head">
+
+    <div>
+        <h2>
+            <strong>Come</strong> saldiamo
+        </h2>
+    </div>
+
+        <div>
+            <p>
+                La disponibilità di differenti tecnologie
+                permette di impostare la lavorazione in
+                funzione del materiale, della geometria
+                del componente e delle caratteristiche
+                richieste alla giunzione.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="welding-process-list">
+
+    <article class="welding-process-item">
+        <div class="process-content">
+            <span class="number">MIG / MAG</span>
+            <h3>Versatilità</h3>
+            <p>
+                Processo ad arco con filo continuo,
+                pensato per differenti esigenze di produzione.
+            </p>
+        </div>
+        <figure class="process-image">
+            <img
+                src="SaldaturaMigMag.png"
+                alt="Schema del processo di saldatura MIG / MAG"
+                loading="lazy"
+                decoding="async"
+            >
+        </figure>
+    </article>
+
+    <article class="welding-process-item">
+        <div class="process-content">
+            <span class="number">TIG</span>
+            <h3>Controllo</h3>
+            <p>
+                Tecnologia orientata a un controllo accurato
+                dell'arco e della zona di saldatura.
+            </p>
+        </div>
+        <figure class="process-image">
+            <img
+                src="SaldaturaTig.png"
+                alt="Schema del processo di saldatura TIG"
+                loading="lazy"
+                decoding="async"
+            >
+        </figure>
+    </article>
+
+    <article class="welding-process-item">
+        <div class="process-content">
+            <span class="number">ARCO SOMMERSO</span>
+            <h3>Continuità</h3>
+            <p>
+                Processo dedicato a specifiche esigenze
+                di saldatura continua.
+            </p>
+        </div>
+        <figure class="process-image">
+            <img
+                src="SaldaturaArcoSommerso.png"
+                alt="Schema del processo di saldatura ad arco sommerso"
+                loading="lazy"
+                decoding="async"
+            >
+        </figure>
+    </article>
+
+    <article class="welding-process-item">
+        <div class="process-content">
+            <span class="number">PLASMA</span>
+            <h3>Precisione</h3>
+            <p>
+                Tecnologia basata sull'arco al plasma,
+                integrata nella gamma dei processi disponibili.
+            </p>
+        </div>
+        <figure class="process-image">
+            <img
+                src="SaldaturaPlasma.png"
+                alt="Schema del processo di saldatura al plasma"
+                loading="lazy"
+                decoding="async"
+            >
+        </figure>
+    </article>
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</main>
+
+<footer
+    id="contatti"
+    class="footer"
+>
+
+
+<div class="footer-inner">
+
+
+    <div class="footer-logos">
+
+        <img
+            src="Logo1.jpg"
+            alt="INCATEC SRL"
+        >
+
+        <img
+            src="Logo2.jpg"
+            alt="GH Saldature"
+        >
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Contattaci
+        </h3>
+
+        <p>
+            RESPONSABILE LAVORI
+        </p>
+
+        <p>
+            Cell. 3273639328
+        </p>
+
+        <p>
+
+            e-mail:
+
+            <a
+                href="mailto:service_incatecsrl@outlook.it"
+            >
+                service_incatecsrl@outlook.it
+            </a>
+
+        </p>
+
+        <p>
+            UFFICIO AMMINISTRAZIONE
+        </p>
+
+        <p>
+            Cell. 02 39548389
+        </p>
+
+        <p>
+
+            e-mail:
+
+            <a
+                href="mailto:incatec.srl@outlook.com"
+            >
+                incatec.srl@outlook.com
+            </a>
+
+        </p>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            INDIRIZZI
+        </h3>
+
+        <p>
+            Via Italo Calvino 7/B<br>
+            Rho (MI)
+        </p>
+
+        <p>
+            Località Rivazza 8<br>
+            Borgo Priolo (PV)
+        </p>
+
+    </div>
+
+
+    <div class="footer-column">
+
+        <h3>
+            Dati aziendali
+        </h3>
+
+        <p>
+            P.IVA INCATEC SRL:<br>
+            12009360962
+        </p>
+
+        <p>
+            P.IVA G.H. SALDATURE:<br>
+            12646890967
+        </p>
+
+    </div>
+
+
+</div>
+
+</footer>
+
+<script>
+/* =========================================================
+   SALDATURA — ANIMAZIONE INTRODUTTIVA
+   ========================================================= */
+
+const leftSheet =
+    document.getElementById("leftSheet");
+
+const rightSheet =
+    document.getElementById("rightSheet");
+
+const torch =
+    document.getElementById("torch");
+
+const seam =
+    document.getElementById("weldSeam");
+
+const canvas =
+    document.getElementById("fx");
+
+const ctx =
+    canvas.getContext("2d");
+
+const title =
+    document.getElementById("weldingTitle");
+
+
+const W = 1170;
+const H = 1032;
+
+canvas.width = W;
+canvas.height = H;
+
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+/* =========================================================
+   TIMELINE — STESSA SEQUENZA DEL CODICE 1,
+   semplicemente compressa da 11s a 3s.
+   ========================================================= */
+
+const PHASE = {
+
+    SHEETS_START: 0,
+    SHEETS_END: 600,
+
+    TORCH_START: 491,
+    TORCH_END: 1091,
+
+    WELD_START: 1091,
+    WELD_END: 2182,
+
+    EXIT_START: 2182,
+    EXIT_END: 3000,
+
+    TITLE_START: 0,
+
+    PAGE_START: 3000
+};
+
+const TOTAL =
+    PHASE.PAGE_START;
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+function clamp(x,min,max){
+
+    return Math.max(
+        min,
+        Math.min(max,x)
+    );
+
+}
+
+
+function easeInOut(t){
+
+    t = clamp(t,0,1);
+
+    return t < .5
+
+        ? 2*t*t
+
+        : 1 -
+          Math.pow(-2*t+2,2)/2;
+
+}
+
+
+function easeOut(t){
+
+    t = clamp(t,0,1);
+
+    return 1 -
+        Math.pow(1-t,3);
+
+}
+
+
+function lerp(a,b,t){
+
+    return a +
+        (b-a)*t;
+
+}
+
+
+function random(min,max){
+
+    return Math.random() *
+        (max-min) + min;
+
+}
+
+
+/* =========================================================
+   COORDINATE SCINTILLE — ALLINEATE ALLA GIUNZIONE SVG
+   L'SVG usa preserveAspectRatio="xMidYMid meet", mentre il
+   canvas occupa tutta la finestra. Questa conversione fa sì che
+   il punto 488/868 del disegno (spostato a destra di 300px)
+   coincida visivamente con la giunzione tra le due lamiere.
+   ========================================================= */
+
+function svgPointToCanvas(x,y){
+
+    const stage = document.getElementById("weldingStage");
+
+    const rect = stage.getBoundingClientRect();
+
+    const scale = Math.min(
+        rect.width / W,
+        rect.height / H
+    );
+
+    const renderedWidth = W * scale;
+    const renderedHeight = H * scale;
+
+    const offsetX = (rect.width - renderedWidth) / 2;
+    const offsetY = (rect.height - renderedHeight) / 2;
+
+    return {
+        x: (offsetX + x * scale) * (W / rect.width),
+        y: (offsetY + y * scale) * (H / rect.height)
+    };
+}
+
+
+/* =========================================================
+   LAMIERE
+   ========================================================= */
+
+function updateSheets(elapsed){
+
+    let t =
+        clamp(
+            elapsed /
+            PHASE.SHEETS_END,
+            0,
+            1
+        );
+
+    t =
+        easeInOut(t);
+
+    const leftX =
+        lerp(-150,0,t);
+
+    const rightX =
+        lerp(150,0,t);
+
+    leftSheet.setAttribute(
+        "transform",
+        `translate(${leftX} 0)`
+    );
+
+    rightSheet.setAttribute(
+        "transform",
+        `translate(${rightX} 0)`
+    );
+
+}
+
+
+/* =========================================================
+   TORCIA
+   ========================================================= */
+
+function updateTorch(elapsed){
+
+    /* POSIZIONE INIZIALE */
+
+    if(
+        elapsed <
+        PHASE.TORCH_START
+    ){
+
+        torch.style.opacity = "1";
+
+        torch.setAttribute(
+            "transform",
+            "translate(380 -260) scale(1)"
+        );
+
+        return;
+
+    }
+
+
+    /* ARRIVO */
+
+    if(
+        elapsed <
+        PHASE.TORCH_END
+    ){
+
+        const t =
+            (
+                elapsed -
+                PHASE.TORCH_START
+            )
+            /
+            (
+                PHASE.TORCH_END -
+                PHASE.TORCH_START
+            );
+
+        const e =
+            easeInOut(t);
+
+        const x =
+            lerp(250,0,e);
+
+        const y =
+            lerp(-230,0,e);
+
+        const rotation =
+            lerp(12,0,e);
+
+        torch.style.opacity = "1";
+
+        torch.setAttribute(
+            "transform",
+            `
+            translate(${x} ${y})
+            rotate(${rotation} 488 868)
+            scale(1)
+            `
+        );
+
+        return;
+
+    }
+
+
+    /* SALDATURA */
+
+    if(
+        elapsed <
+        PHASE.EXIT_START
+    ){
+
+        const t =
+            clamp(
+                (
+                    elapsed -
+                    PHASE.WELD_START
+                )
+                /
+                (
+                    PHASE.WELD_END -
+                    PHASE.WELD_START
+                ),
+                0,
+                1
+            );
+
+        const x =
+            Math.sin(
+                t * Math.PI * 9
+            ) * 2;
+
+        const y =
+            Math.sin(
+                t * Math.PI * 13
+            ) * 1.4;
+
+        const rotation =
+            Math.sin(
+                t * Math.PI * 8
+            ) * .7;
+
+        torch.style.opacity = "1";
+
+        torch.setAttribute(
+            "transform",
+            `
+            translate(${x} ${y})
+            rotate(${rotation} 488 868)
+            scale(1)
+            `
+        );
+
+        return;
+
+    }
+
+
+    /* USCITA — IDENTICA AL CODICE 1 */
+
+    const t =
+        clamp(
+            (
+                elapsed -
+                PHASE.EXIT_START
+            )
+            /
+            (
+                PHASE.EXIT_END -
+                PHASE.EXIT_START
+            ),
+            0,
+            1
+        );
+
+    const e =
+        easeInOut(t);
+
+    const x =
+        lerp(
+            0,
+            720,
+            e
+        );
+
+    const y =
+        lerp(
+            0,
+            -300,
+            e
+        );
+
+    const scale =
+        lerp(
+            1,
+            .13,
+            e
+        );
+
+    const rotation =
+        lerp(
+            0,
+            15,
+            e
+        );
+
+    torch.style.opacity = "1";
+
+    torch.setAttribute(
+        "transform",
+        `
+        translate(${x} ${y})
+        rotate(${rotation} 488 868)
+        scale(${scale})
+        `
+    );
+
+
+}
+
+
+/* =========================================================
+   PARTICELLE / SCINTILLE
+   ========================================================= */
+
+let particles = [];
+
+let emissionAccumulator = 0;
+
+
+class Spark{
+
+    constructor(){
+
+        /*
+           Centro esatto della giunzione del codice 1:
+           488 / 868. La grafica SVG è traslata di +300px,
+           quindi il punto visivo è 788 / 868.
+        */
+        const joint = svgPointToCanvas(
+            788 + random(-2,2),
+            868 + random(-1.5,1.5)
+        );
+
+        this.x = joint.x;
+        this.y = joint.y;
+
+        const angle =
+            -Math.PI/2 +
+            random(-.72,.72);
+
+        const speed =
+            random(3.2,9);
+
+        this.vx =
+            Math.cos(angle) *
+            speed;
+
+        this.vy =
+            Math.sin(angle) *
+            speed;
+
+        this.gravity =
+            random(.065,.13);
+
+        this.drag =
+            random(.975,.992);
+
+        this.life =
+            random(220,700);
+
+        this.maxLife =
+            this.life;
+
+        this.size =
+            random(1.2,3.4);
+
+        this.history = [];
+
+    }
+
+
+    update(dt){
+
+        this.history.push({
+            x:this.x,
+            y:this.y
+        });
+
+        if(
+            this.history.length > 7
+        ){
+
+            this.history.shift();
+
+        }
+
+        this.vx +=
+            Math.sin(
+                this.y*.035 +
+                performance.now()*.003
+            ) *
+            .025 *
+            dt;
+
+        this.vy +=
+            this.gravity *
+            dt;
+
+        this.vx *=
+            Math.pow(
+                this.drag,
+                dt
+            );
+
+        this.vy *=
+            Math.pow(
+                this.drag,
+                dt
+            );
+
+        this.x +=
+            this.vx * dt;
+
+        this.y +=
+            this.vy * dt;
+
+        this.life -=
+            16.666 * dt;
+
+    }
+
+
+    draw(){
+
+        if(
+            this.life <= 0
+        )
+            return;
+
+        let alpha =
+            this.life /
+            this.maxLife;
+
+        if(alpha > .8){
+
+            alpha =
+                (1-alpha)/.2;
+
+        }
+        else if(alpha < .2){
+
+            alpha =
+                alpha/.2;
+
+        }
+        else{
+
+            alpha = 1;
+
+        }
+
+        ctx.save();
+
+        ctx.globalCompositeOperation =
+            "lighter";
+
+        /* TRAIL */
+
+        for(
+            let i=1;
+            i<this.history.length;
+            i++
+        ){
+
+            const a =
+                this.history[i-1];
+
+            const b =
+                this.history[i];
+
+            const strength =
+                i /
+                this.history.length;
+
+            ctx.strokeStyle =
+                `rgba(
+                    230,
+                    0,
+                    15,
+                    ${alpha*strength}
+                )`;
+
+            ctx.lineWidth =
+                this.size *
+                strength;
+
+            ctx.lineCap =
+                "square";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                a.x,
+                a.y
+            );
+
+            ctx.lineTo(
+                b.x,
+                b.y
+            );
+
+            ctx.stroke();
+
+        }
+
+
+        /* CORPO */
+
+        const angle =
+            Math.atan2(
+                this.vy,
+                this.vx
+            );
+
+        const velocity =
+            Math.sqrt(
+                this.vx*this.vx +
+                this.vy*this.vy
+            );
+
+        const length =
+            Math.min(
+                18,
+                velocity*1.8
+            );
+
+        const tx =
+            this.x -
+            Math.cos(angle)*length;
+
+        const ty =
+            this.y -
+            Math.sin(angle)*length;
+
+        ctx.strokeStyle =
+            `rgba(
+                230,
+                0,
+                15,
+                ${alpha}
+            )`;
+
+        ctx.lineWidth =
+            this.size*1.3;
+
+        ctx.lineCap =
+            "square";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            tx,
+            ty
+        );
+
+        ctx.lineTo(
+            this.x,
+            this.y
+        );
+
+        ctx.stroke();
+
+
+        /* PUNTA */
+
+        const s =
+            this.size*2;
+
+        ctx.fillStyle =
+            `rgba(
+                230,
+                0,
+                15,
+                ${alpha}
+            )`;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            this.x,
+            this.y-s
+        );
+
+        ctx.lineTo(
+            this.x+s,
+            this.y
+        );
+
+        ctx.lineTo(
+            this.x,
+            this.y+s
+        );
+
+        ctx.lineTo(
+            this.x-s,
+            this.y
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+
+    }
+
+}
+
+
+function emit(dt){
+
+    emissionAccumulator +=
+        95*dt;
+
+    const amount =
+        Math.floor(
+            emissionAccumulator
+        );
+
+    emissionAccumulator -=
+        amount;
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        if(
+            particles.length >= 360
+        )
+            break;
+
+        particles.push(
+            new Spark()
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   LOOP
+   ========================================================= */
+
+let start =
+    performance.now();
+
+let previous =
+    start;
+
+
+function finishIntro(){
+
+    /*
+       La torcia NON viene nascosta: resta nella posizione finale
+       dell'animazione del codice 1.
+    */
+
+    torch.style.opacity = "1";
+
+    torch.setAttribute(
+        "transform",
+        `
+        translate(720 -300)
+        rotate(15 488 868)
+        scale(.13)
+        `
+    );
+
+    /*
+       Anche il titolo resta visibile.
+    */
+
+    title.style.opacity = "1";
+    title.style.transform =
+        "translate(-50%,-50%) translateX(0)";
+
+    /* Scintille eliminate quando il grigio si apre. */
+
+    particles = [];
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    /*
+       Solo ora la pagina può aprirsi.
+    */
+
+    document.body.classList.remove(
+        "scene-lock"
+    );
+
+    document.body.classList.add(
+        "scene-ready"
+    );
+
+    requestAnimationFrame(
+        function(){
+
+            document.body.classList.add(
+                "content-revealed"
+            );
+
+        }
+    );
+}
+
+
+function loop(now){
+
+    let dt =
+        (
+            now -
+            previous
+        ) /
+        16.666;
+
+    previous =
+        now;
+
+    dt =
+        Math.min(
+            dt,
+            2
+        );
+
+
+    const elapsed =
+        now -
+        start;
+
+
+    /* LAMIERE */
+
+    updateSheets(
+        elapsed
+    );
+
+
+    /* TORCIA */
+
+    updateTorch(
+        elapsed
+    );
+
+
+    /* GIUNZIONE */
+
+    if(
+        elapsed >=
+        PHASE.SHEETS_END
+    ){
+
+        seam.setAttribute(
+            "opacity",
+            "1"
+        );
+
+    }
+    else{
+
+        seam.setAttribute(
+            "opacity",
+            "0"
+        );
+
+    }
+
+
+    /* CANVAS */
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /* SCINTILLE */
+
+    if(
+        elapsed >=
+        PHASE.WELD_START &&
+
+        elapsed <
+        PHASE.WELD_END
+    ){
+
+        emit(dt);
+
+    }
+
+
+    /* PARTICELLE */
+
+    for(
+        let i =
+            particles.length-1;
+
+        i>=0;
+
+        i--
+    ){
+
+        const p =
+            particles[i];
+
+        p.update(dt);
+
+        if(
+            p.life <= 0
+        ){
+
+            particles.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+
+    for(
+        const p of particles
+    ){
+
+        p.draw();
+
+    }
+
+
+    /* =====================================================
+       TITOLO "SALDATURA"
+       ===================================================== */
+
+    /* =====================================================
+       TITOLO — RESTA SEMPRE VISIBILE FINO ALL'APERTURA
+       ===================================================== */
+
+    const titleProgress =
+        clamp(
+            elapsed / 450,
+            0,
+            1
+        );
+
+    title.style.opacity =
+        String(
+            easeOut(titleProgress)
+        );
+
+    const titleX =
+        lerp(
+            35,
+            0,
+            easeOut(titleProgress)
+        );
+
+    title.style.transform =
+        `
+        translate(-50%,-50%)
+        translateX(${titleX}px)
+        `;
+
+
+    /* =====================================================
+       FINE INTRO
+       ===================================================== */
+
+    if(
+        elapsed >=
+        TOTAL
+    ){
+
+        finishIntro();
+
+        return;
+
+    }
+
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+
+/* =========================================================
+   AVVIO
+   ========================================================= */
+
+if(
+    window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches
+){
+
+    /*
+       Accessibilità:
+       saltiamo l'animazione,
+       nascondiamo subito la torcia
+       e apriamo la pagina.
+    */
+
+    updateSheets(
+        PHASE.SHEETS_END
+    );
+
+    seam.setAttribute(
+        "opacity",
+        "1"
+    );
+
+    torch.style.opacity =
+        "1";
+
+    torch.setAttribute(
+        "transform",
+        "translate(720 -300) rotate(15 488 868) scale(.13)"
+    );
+
+    title.style.opacity =
+        "1";
+
+    title.style.transform =
+        "translate(-50%,-50%) translateX(0)";
+
+    document.body.classList.remove(
+        "scene-lock"
+    );
+
+    document.body.classList.add(
+        "scene-ready"
+    );
+
+    document.body.classList.add(
+        "content-revealed"
+    );
+
+}
+else{
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+</script>
+
+</body>
+</html>

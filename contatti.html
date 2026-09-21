@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contatti | INCATEC SRL</title>
+
+    <style>
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        :root {
+            --red: #e30613;
+            --black: #111111;
+            --grey: #5f5f5f;
+            --light-grey: #f5f5f5;
+            --line: #dedede;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+
+            color: var(--black);
+            background: var(--white);
+
+            font-family:
+                "Helvetica Neue",
+                Helvetica,
+                Arial,
+                sans-serif;
+        }
+
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        header{
+          height:90px;
+          padding:0 1.5%;
+          background:rgba(255,255,255,.98);
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          position:sticky;
+          top:0;
+          z-index:5000;
+          border-bottom:1px solid #e8e8e8;
+          box-shadow:0 5px 20px rgba(0,0,0,.04);
+          backdrop-filter:blur(10px);
+          -webkit-backdrop-filter:blur(10px);
+        }
+
+        .brand-logos{
+          display:flex;
+          align-items:center;
+          gap:20px;
+          height:86px;
+        }
+
+        .brand-logos img{
+          display:block;
+          width:auto;
+          object-fit:contain;
+          max-height:86px;
+        }
+
+        .brand-logos img:first-child{
+          height:86px;
+          max-width:250px;
+        }
+
+        .brand-logos img:last-child{
+          height:78px;
+          max-width:220px;
+        }
+
+        nav{
+          display:flex;
+          align-items:center;
+          gap:38px;
+        }
+
+        nav>a,
+        .menu-label{
+          position:relative;
+          text-decoration:none;
+          color:#111;
+          font-size:13px;
+          font-weight:600;
+          letter-spacing:.08em;
+          text-transform:uppercase;
+          cursor:pointer;
+          transition:font-weight .15s ease;
+        }
+
+        nav>a:hover,
+        .menu-item:hover>.menu-label{
+          font-weight:700;
+        }
+
+        nav>a::after,
+        .menu-label::after{
+          content:"";
+          position:absolute;
+          left:0;
+          bottom:-8px;
+          width:100%;
+          height:2px;
+          background:var(--inca-red, #c61722);
+          transform:scaleX(0);
+          transform-origin:right;
+          transition:transform .3s cubic-bezier(.22,1,.36,1);
+        }
+
+        nav>a:hover::after,
+        .menu-item:hover>.menu-label::after{
+          transform:scaleX(1);
+          transform-origin:left;
+        }
+
+        .menu-item{
+          position:relative;
+          height:90px;
+          display:flex;
+          align-items:center;
+        }
+
+        /* ==================================================
+           DROPDOWN
+        ================================================== */
+
+        .dropdown{
+          position:absolute;
+          top:calc(100% - 1px);
+          left:50%;
+          transform:translateX(-50%);
+          width:285px;
+          background:#fff;
+          padding:8px 0;
+          border:0;
+          border-top:2px solid var(--inca-red, #c61722);
+          border-radius:0;
+          box-shadow:0 18px 40px rgba(0,0,0,.10);
+          opacity:0;
+          visibility:hidden;
+          transition:opacity .15s ease,visibility .15s ease;
+          z-index:6000;
+        }
+
+        .menu-item:hover .dropdown{
+          opacity:1;
+          visibility:visible;
+        }
+
+        .dropdown a{
+          display:block;
+          padding:12px 24px;
+          text-decoration:none;
+          color:#111;
+          background:#fff;
+          font-size:12px;
+          font-weight:500;
+          letter-spacing:.07em;
+          transition:font-weight .15s ease;
+        }
+
+        .dropdown a:hover{
+          color:#111;
+          background:#fff;
+          font-weight:700;
+        }
+
+        /* =========================================================
+           PAGINA CONTATTI
+        ========================================================= */
+
+        .contatti-page {
+            width: 100%;
+
+            background: #ffffff;
+
+            padding: 80px 0 100px;
+        }
+
+        .contatti-container {
+            width: min(1320px, calc(100% - 100px));
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           TITOLO PRINCIPALE
+        ========================================================= */
+
+        .contatti-header {
+            text-align: center;
+
+            margin-bottom: 70px;
+        }
+
+        .contatti-header h1 {
+            margin: 0;
+
+            color: #111111;
+
+            /*
+                Titolo volutamente più piccolo
+                rispetto alla versione precedente.
+            */
+
+            font-size: clamp(48px, 5.5vw, 78px);
+
+            line-height: .9;
+
+            letter-spacing: -.07em;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .contatti-header h1::after {
+            content: "";
+
+            display: block;
+
+            width: 42px;
+            height: 3px;
+
+            margin: 22px auto 24px;
+
+            background: var(--red);
+        }
+
+        .contatti-header p {
+            margin: 0;
+
+            color: #111111;
+
+            font-size: clamp(23px, 2.5vw, 34px);
+
+            line-height: 1;
+
+            letter-spacing: -.045em;
+
+            font-weight: 400;
+        }
+
+
+        /* =========================================================
+           SEDI
+        ========================================================= */
+
+        .sedi-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            gap: 35px;
+
+            margin-bottom: 80px;
+        }
+
+
+        /* CARD SEDE */
+
+        .sede-card {
+            overflow: hidden;
+
+            min-width: 0;
+
+            background: #ffffff;
+
+            border: 1px solid var(--line);
+
+            transition:
+                transform .35s ease,
+                box-shadow .35s ease;
+        }
+
+        .sede-card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, .09);
+        }
+
+
+        /* NOME SEDE */
+
+        .sede-info {
+            padding: 29px 34px;
+
+            background: #ffffff;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .sede-info h2 {
+            margin: 0;
+
+            color: #111111;
+
+            font-size: clamp(27px, 2.8vw, 39px);
+
+            line-height: 1;
+
+            letter-spacing: -.055em;
+
+            font-weight: 500;
+        }
+
+
+        /* =========================================================
+           MAPPA
+        ========================================================= */
+
+        .sede-mappa {
+            position: relative;
+
+            width: 100%;
+
+            height: 430px;
+
+            overflow: hidden;
+
+            background: #eeeeee;
+        }
+
+        .sede-mappa iframe {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            margin: 0;
+            padding: 0;
+
+            border: 0;
+        }
+
+
+        /* =========================================================
+           CONTATTI
+        ========================================================= */
+
+        /* =========================================================
+           RESPONSABILE E AMMINISTRAZIONE
+        ========================================================= */
+
+        .dati-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .dato-box {
+            min-height: 215px;
+
+            padding: 36px 40px;
+
+            border-right: 1px solid var(--line);
+
+            transition:
+                background .3s ease,
+                color .3s ease;
+        }
+
+        .dato-box:last-child {
+            border-right: 0;
+        }
+
+        .dato-box:hover {
+            color: #ffffff;
+
+            background: #111111;
+        }
+
+
+        /* ETICHETTA */
+
+        .dato-label {
+            margin-bottom: 23px;
+
+            color: #777777;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: .16em;
+
+            text-transform: uppercase;
+
+            transition: color .3s ease;
+        }
+
+        .dato-box:hover .dato-label {
+            color: #cccccc;
+        }
+
+
+        /* NOME */
+
+        .dato-box h3 {
+            margin: 0 0 14px;
+
+            color: inherit;
+
+            font-size: 25px;
+
+            line-height: 1.1;
+
+            letter-spacing: -.035em;
+
+            font-weight: 600;
+        }
+
+
+        /* TESTO */
+
+        .dato-box p {
+            margin: 6px 0;
+
+            color: #555555;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+
+            transition: color .3s ease;
+        }
+
+        .dato-box:hover p {
+            color: #cccccc;
+        }
+
+
+        /* LINK */
+
+        .dato-box a {
+            color: inherit;
+
+            text-decoration: none;
+
+            border-bottom: 1px solid #bbbbbb;
+
+            transition:
+                color .2s ease,
+                border-color .2s ease;
+        }
+
+        .dato-box a:hover {
+            color: var(--red);
+
+            border-color: var(--red);
+        }
+
+
+        /* =========================================================
+           PARTITE IVA
+        ========================================================= */
+
+        .partite-iva {
+            display: grid;
+
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+
+            margin-top: 1px;
+        }
+
+        .piva {
+            padding: 32px 40px;
+
+            background: #f7f7f7;
+
+            border-right: 1px solid var(--line);
+        }
+
+        .piva:last-child {
+            border-right: 0;
+        }
+
+        .piva span {
+            display: block;
+
+            margin-bottom: 11px;
+
+            color: #777777;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: .14em;
+
+            text-transform: uppercase;
+        }
+
+        .piva strong {
+            color: #111111;
+
+            font-size: 23px;
+
+            font-weight: 500;
+
+            letter-spacing: -.025em;
+        }
+
+
+        /* =========================================================
+           NESSUN FOOTER
+        =========================================================
+
+           La pagina termina dopo i dati aziendali.
+           Non viene inserita alcuna barra grigia.
+        */
+
+
+        /* =========================================================
+           TABLET
+        ========================================================= */
+
+        @media (max-width: 900px) {
+
+            header{
+                min-height:70px;
+                height:70px;
+            }
+
+            .menu-item{
+                height:70px;
+            }
+
+
+            nav {
+                display: none;
+            }
+
+
+            /* PAGINA */
+
+            .contatti-page {
+                padding: 65px 0 75px;
+            }
+
+            .contatti-container {
+                width: min(100% - 40px, 680px);
+            }
+
+
+            /* TITOLO */
+
+            .contatti-header {
+                margin-bottom: 55px;
+            }
+
+
+            /* SEDI */
+
+            .sedi-grid {
+                grid-template-columns: 1fr;
+
+                gap: 25px;
+
+                margin-bottom: 65px;
+            }
+
+            .sede-mappa {
+                height: 360px;
+            }
+
+
+            .dati-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dato-box {
+                min-height: auto;
+
+                border-right: 0;
+
+                border-bottom: 1px solid var(--line);
+            }
+
+            .dato-box:last-child {
+                border-bottom: 0;
+            }
+
+
+            /* PARTITE IVA */
+
+            .partite-iva {
+                grid-template-columns: 1fr;
+            }
+
+            .piva {
+                border-right: 0;
+
+                border-bottom: 1px solid var(--line);
+            }
+
+            .piva:last-child {
+                border-bottom: 0;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 600px) {
+
+            .contatti-page {
+                padding: 55px 0 60px;
+            }
+
+            .contatti-container {
+                width: calc(100% - 30px);
+            }
+
+
+            /* TITOLO */
+
+            .contatti-header {
+                margin-bottom: 45px;
+            }
+
+            .contatti-header h1 {
+                font-size: 50px;
+            }
+
+            .contatti-header h1::after {
+                width: 38px;
+
+                height: 3px;
+
+                margin: 19px auto 21px;
+            }
+
+            .contatti-header p {
+                font-size: 25px;
+            }
+
+
+            /* SEDI */
+
+            .sede-info {
+                padding: 24px 25px;
+            }
+
+            .sede-info h2 {
+                font-size: 29px;
+            }
+
+            .sede-mappa {
+                height: 310px;
+            }
+
+
+
+            /* BOX */
+
+            .dato-box {
+                padding: 30px 25px;
+            }
+
+            .dato-box h3 {
+                font-size: 22px;
+            }
+
+
+            /* P.IVA */
+
+            .piva {
+                padding: 27px 25px;
+            }
+
+            .piva strong {
+                font-size: 21px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         BARRA SUPERIORE
+    ========================================================= -->
+
+    <header>
+
+        <div class="brand-logos">
+
+            <img
+                src="Logo1.jpg"
+                alt="INCATEC SRL">
+
+            <img
+                src="Logo2.jpg"
+                alt="GH Saldature">
+
+        </div>
+
+
+        <nav>
+
+            <!-- HOME -->
+
+            <a href="./index.html">
+                Home
+            </a>
+
+
+            <!-- SERVIZI -->
+
+            <div class="menu-item">
+
+                <span class="menu-label">
+                    Servizi
+                </span>
+
+                <div class="dropdown">
+
+                    <a href="./montaggio.html">
+                        MONTAGGIO
+                    </a>
+
+                    <a href="./manodopera.html">
+                        PRESTAZIONE DI MANODOPERA
+                    </a>
+
+                    <a href="./intervento-tecnico.html">
+                        INTERVENTO TECNICO
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- LAVORAZIONI -->
+
+            <div class="menu-item">
+
+                <span class="menu-label">
+                    Lavorazioni
+                </span>
+
+                <div class="dropdown">
+
+                    <a href="./taglio-laser.html">
+                        TAGLIO LASER
+                    </a>
+
+                    <a href="./piegatura.html">
+                        PIEGATURA
+                    </a>
+
+                    <a href="./saldatura.html">
+                        SALDATURA
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTATTI -->
+
+            <a href="./contatti.html">
+                Contatti
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         CONTENUTO PAGINA
+    ========================================================= -->
+
+    <main
+        id="contatti"
+        class="contatti-page">
+
+        <div class="contatti-container">
+
+
+            <!-- =================================================
+                 TITOLO
+            ================================================= -->
+
+            <section class="contatti-header">
+
+                <h1>
+                    CONTATTI
+                </h1>
+
+                <p>
+                    Le nostre sedi
+                </p>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SEDI
+            ================================================= -->
+
+            <section class="sedi-grid">
+
+
+                <!-- =============================================
+                     SEDE BORGO PRIOLO
+                ============================================== -->
+
+                <article class="sede-card">
+
+                    <div class="sede-info">
+
+                        <h2>
+                            Sede di Borgo Priolo
+                        </h2>
+
+                    </div>
+
+
+                    <div class="sede-mappa">
+
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3306.9451713592516!2d9.109495076723562!3d44.9858032710701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x478739c188480c45%3A0xd6abc35a1f23f2d!2sIncatec%20S.r.l!5e1!3m2!1sit!2sit!4v1789387941268!5m2!1sit!2sit"
+                            width="600"
+                            height="450"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="strict-origin-when-cross-origin">
+                        </iframe>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- =============================================
+                     SEDE RHO
+                ============================================== -->
+
+                <article class="sede-card">
+
+                    <div class="sede-info">
+
+                        <h2>
+                            Sede di Rho
+                        </h2>
+
+                    </div>
+
+
+                    <div class="sede-mappa">
+
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3276.0835877115655!2d9.036633076748096!3d45.51830477107494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786eb09e6848689%3A0xe52803e362d1dc1b!2sINCATEC!5e1!3m2!1sit!2sit!4v1789388297409!5m2!1sit!2sit"
+                            width="600"
+                            height="450"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="strict-origin-when-cross-origin">
+                        </iframe>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CONTATTI
+            ================================================= -->
+
+            <section class="contatti-dati">
+
+
+
+                <!-- =================================================
+                     DATI CONTATTO
+                ================================================= -->
+
+                <div class="dati-grid">
+
+
+                    <!-- RESPONSABILE LAVORI -->
+
+                    <div class="dato-box">
+
+                        <div class="dato-label">
+                            Responsabile lavori
+                        </div>
+
+                        <h3>
+                            CARLOS GARCIA
+                        </h3>
+
+                        <p>
+
+                            Cell.
+
+                            <a href="tel:+393273639328">
+                                327 363 9328
+                            </a>
+
+                        </p>
+
+                        <p>
+
+                            e-mail:
+
+                            <a href="mailto:service_incatecsrl@outlook.it">
+                                service_incatecsrl@outlook.it
+                            </a>
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- UFFICIO AMMINISTRAZIONE -->
+
+                    <div class="dato-box">
+
+                        <div class="dato-label">
+                            Ufficio amministrazione
+                        </div>
+
+                        <h3>
+                            Amministrazione
+                        </h3>
+
+                        <p>
+
+                            Cell.
+
+                            <a href="tel:+390239548389">
+                                02 39548389
+                            </a>
+
+                        </p>
+
+                        <p>
+
+                            e-mail:
+
+                            <a href="mailto:incatec.srl@outlook.com">
+                                incatec.srl@outlook.com
+                            </a>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PARTITE IVA
+                ================================================= -->
+
+                <div class="partite-iva">
+
+
+                    <!-- INCATEC -->
+
+                    <div class="piva">
+
+                        <span>
+                            P.IVA INCATEC SRL
+                        </span>
+
+                        <strong>
+                            12009360962
+                        </strong>
+
+                    </div>
+
+
+                    <!-- GH SALDATURE -->
+
+                    <div class="piva">
+
+                        <span>
+                            P.IVA G.H. SALDATURE
+                        </span>
+
+                        <strong>
+                            12646890967
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+</body>
+
+</html>

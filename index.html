@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INCATEC SRL</title>
+
+    <style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  background:#fff;
+  color:#111;
+}
+
+:root{
+  --inca-red:#c61722;
+  --inca-red-dark:#a9121c;
+  --inca-black:#111;
+  --inca-grey:#646464;
+  --inca-light:#f5f5f5;
+  --inca-line:#dedede;
+  --inca-container:min(1320px,calc(100% - 100px));
+}
+
+
+/* ==================================================
+   HEADER
+================================================== */
+
+header{
+  height:90px;
+  padding:0 1.5%;
+  background:rgba(255,255,255,.98);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:5000;
+  border-bottom:1px solid #e8e8e8;
+  box-shadow:0 5px 20px rgba(0,0,0,.04);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+
+.brand-logos{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  height:86px;
+}
+
+.brand-logos img{
+  display:block;
+  width:auto;
+  object-fit:contain;
+  max-height:86px;
+}
+
+.brand-logos img:first-child{
+  height:86px;
+  max-width:250px;
+}
+
+.brand-logos img:last-child{
+  height:78px;
+  max-width:220px;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:38px;
+}
+
+nav>a,
+.menu-label{
+  position:relative;
+  text-decoration:none;
+  color:#111;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:font-weight .15s ease;
+}
+
+nav>a:hover,
+.menu-item:hover>.menu-label{
+  font-weight:700;
+}
+
+nav>a::after,
+.menu-label::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-8px;
+  width:100%;
+  height:2px;
+  background:var(--inca-red);
+  transform:scaleX(0);
+  transform-origin:right;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+
+nav>a:hover::after,
+.menu-item:hover>.menu-label::after{
+  transform:scaleX(1);
+  transform-origin:left;
+}
+
+.menu-item{
+  position:relative;
+  height:90px;
+  display:flex;
+  align-items:center;
+}
+
+
+/* ==================================================
+   DROPDOWN
+================================================== */
+
+.dropdown{
+  position:absolute;
+  top:calc(100% - 1px);
+  left:50%;
+  transform:translateX(-50%);
+  width:285px;
+  background:#fff;
+  padding:8px 0;
+  border:0;
+  border-top:2px solid var(--inca-red);
+  border-radius:0;
+  box-shadow:0 18px 40px rgba(0,0,0,.10);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .15s ease,visibility .15s ease;
+  z-index:6000;
+}
+
+.menu-item:hover .dropdown{
+  opacity:1;
+  visibility:visible;
+}
+
+.dropdown a{
+  display:block;
+  padding:12px 24px;
+  text-decoration:none;
+  color:#111;
+  background:#fff;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.07em;
+  transition:font-weight .15s ease;
+}
+
+.dropdown a:hover{
+  color:#111;
+  background:#fff;
+  font-weight:700;
+}
+
+
+/* ==================================================
+   HERO
+================================================== */
+
+.hero{
+  min-height:calc(100vh - 90px);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:80px max(5vw,50px);
+  overflow:hidden;
+  color:#fff;
+}
+
+.video-background{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+}
+
+.video-background video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
+}
+
+.video-background video.active{
+  display:block;
+}
+
+.video-overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:1;
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:1100px;
+}
+
+.hero h1{
+  max-width:1000px;
+  font-size:clamp(58px,8.2vw,126px);
+  font-weight:600;
+  line-height:.88;
+  letter-spacing:-.075em;
+  transition:transform .08s linear,opacity .08s linear;
+}
+
+.hero p{
+  max-width:610px;
+  margin-top:28px;
+  font-size:18px;
+  line-height:1.55;
+  letter-spacing:-.01em;
+  color:#fff;
+  transition:transform .08s linear,opacity .08s linear;
+}
+
+
+/* ==================================================
+   CHI SIAMO
+================================================== */
+
+.chi-siamo{
+  width:var(--inca-container);
+  margin:0 auto;
+  padding:125px 0 120px;
+  display:grid;
+  grid-template-columns:.82fr 1.18fr;
+  grid-template-rows:auto auto auto auto;
+  column-gap:100px;
+  row-gap:0;
+  align-items:start;
+  overflow:visible;
+  background:#fff;
+}
+
+.chi-testo{
+  max-width:650px;
+  padding-top:0;
+  transform:translateX(-120px);
+  opacity:0;
+  transition:
+    transform 1s cubic-bezier(.22,1,.36,1),
+    opacity 1s ease;
+}
+
+.chi-testo.visible{
+  transform:translateX(0);
+  opacity:1;
+}
+
+.chi-testo h2{
+  margin-bottom:34px;
+  font-size:clamp(48px,5vw,72px);
+  font-weight:400;
+  line-height:.92;
+  letter-spacing:-.07em;
+  color:#000;
+}
+
+.chi-testo p{
+  max-width:620px;
+  color:#111;
+  font-size:21px;
+  line-height:1.75;
+  font-weight:300;
+  letter-spacing:-.01em;
+  text-align:left;
+}
+
+.chi-destra{
+  width:100%;
+}
+
+.chi-foto{
+  width:100%;
+  height:min(610px,46vw);
+  min-height:430px;
+  border-radius:0;
+  overflow:hidden;
+  background:var(--inca-light);
+  transform:translateX(120px);
+  opacity:0;
+  transition:
+    transform 1s cubic-bezier(.22,1,.36,1),
+    opacity 1s ease;
+}
+
+.chi-foto.visible{
+  transform:translateX(0);
+  opacity:1;
+}
+
+.chi-foto img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  transition:transform 1.1s cubic-bezier(.2,.65,.2,1);
+}
+
+.chi-foto:hover img{
+  transform:scale(1.025);
+}
+
+
+/* ==================================================
+   SLOGAN
+================================================== */
+
+.chi-slogan{
+  grid-column:1/-1;
+  width:100%;
+  margin-top:105px;
+  padding-top:32px;
+  border-top:none;
+  transform:translateX(160px);
+  opacity:0;
+  transition:
+    transform 1.2s cubic-bezier(.22,1,.36,1),
+    opacity 1s ease;
+}
+
+.chi-slogan.visible{
+  transform:translateX(0);
+  opacity:1;
+}
+
+.chi-slogan-text{
+  max-width:1080px;
+  font-size:clamp(20px,3vw,35px);
+  line-height:1.08;
+  font-weight:400;
+  letter-spacing:-.055em;
+  color:var(--inca-black);
+}
+
+.chi-slogan-text strong,
+.chi-slogan-text .rosso-chiaro{
+  color:var(--inca-red);
+}
+
+.chi-slogan-line{
+  width:100%;
+  height:2px;
+  margin-top:42px;
+  background:linear-gradient(
+    to right,
+    var(--inca-red) 0%,
+    var(--inca-red) 18%,
+    var(--inca-line) 75%,
+    transparent 100%
+  );
+}
+
+
+/* ==================================================
+   COSA OFFRIAMO
+================================================== */
+
+.offerte-title{
+  grid-column:1/-1;
+  width:100%;
+  margin-top:125px;
+  margin-bottom:34px;
+  padding-bottom:0;
+  border-bottom:0;
+  font-size:clamp(44px,5vw,68px);
+  font-weight:400;
+  line-height:.95;
+  letter-spacing:-.065em;
+  color:#111;
+  text-align:left;
+}
+
+.offerte-title::before{
+  display:none;
+}
+
+
+/* ==================================================
+   SERVIZI
+================================================== */
+
+.lavorazioni{
+  grid-column:1/-1;
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  padding:0;
+  border:0;
+}
+
+.lavorazione-link{
+  display:block;
+  width:100%;
+  text-decoration:none;
+  color:inherit;
+  border:0;
+}
+
+.lavorazione-card{
+  position:relative;
+  width:100%;
+  min-height:330px;
+  padding:14px 16px 20px;
+  border:0;
+  border-radius:10px;
+  background:#fff;
+  transform:translateY(70px);
+  opacity:0;
+  transition:
+    transform .8s cubic-bezier(.22,1,.36,1),
+    opacity .8s ease,
+    background .25s ease;
+}
+
+.lavorazione-card.visible{
+  transform:translateY(0);
+  opacity:1;
+}
+
+.lavorazione-card:nth-child(1).visible{
+  transition-delay:.05s;
+}
+
+.lavorazione-card:nth-child(2).visible{
+  transition-delay:.15s;
+}
+
+.lavorazione-card:nth-child(3).visible{
+  transition-delay:.25s;
+}
+
+.lavorazione-card:nth-child(4).visible{
+  transition-delay:.35s;
+}
+
+.lavorazione-card:nth-child(5).visible{
+  transition-delay:.45s;
+}
+
+.lavorazione-card:nth-child(6).visible{
+  transition-delay:.55s;
+}
+
+.lavorazione-link:hover .lavorazione-card{
+  background:#f3f3f3;
+  transform:translateY(-4px);
+  box-shadow:none;
+}
+
+.lavorazione-img{
+  width:78%;
+  aspect-ratio:1/1;
+  margin:0 auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:#f1f1f1;
+  border-radius:9px;
+}
+
+.lavorazione-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  transition:transform .5s cubic-bezier(.2,.65,.2,1);
+}
+
+.lavorazione-link:hover .lavorazione-img img{
+  transform:scale(1.035);
+}
+
+.lavorazione-card h3{
+  margin-bottom:9px;
+  color:var(--inca-black);
+  font-size:18px;
+  line-height:1.1;
+  font-weight:700;
+  letter-spacing:-.035em;
+}
+
+.lavorazione-card p{
+  max-width:360px;
+  color:var(--inca-grey);
+  font-size:14px;
+  line-height:1.65;
+  font-weight:300;
+}
+
+.lavorazione-card h3::after{
+  display:none;
+}
+
+.lavorazione-link:hover .lavorazione-card h3{
+  color:var(--inca-black);
+}
+
+.lavorazione-link:hover .lavorazione-card p{
+  color:var(--inca-grey);
+}
+
+
+/* ==================================================
+   FOOTER / CONTATTI
+   Più compatto e proporzionato
+================================================== */
+
+.footer{
+  width:100%;
+  margin-top:0;
+  background:#3a3a3a;
+  color:#fff;
+
+  /* barra più sottile */
+  padding:27px 5%;
+  min-height:165px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.footer-inner{
+  width:100%;
+  max-width:1320px;
+
+  /* tre colonne identiche */
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  /* spazio ravvicinato tra le colonne */
+  gap:28px;
+
+  align-items:start;
+  justify-items:center;
+  text-align:center;
+}
+
+
+/* ==================================================
+   COLONNE FOOTER
+================================================== */
+
+.footer-column{
+  width:100%;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  text-align:center;
+}
+
+
+/* ==================================================
+   TITOLI
+   Tutti sulla stessa identica altezza
+================================================== */
+
+.footer h3{
+  width:100%;
+  height:25px;
+
+  margin:0 0 9px 0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#fff;
+
+  /* caratteri leggermente più grandi */
+  font-size:20px;
+
+  font-weight:500;
+
+  line-height:25px;
+
+  letter-spacing:-.035em;
+}
+
+
+/* ==================================================
+   TESTI
+   Più grandi ma ravvicinati
+================================================== */
+
+.footer-column,
+.footer-column p,
+.footer-column a{
+  color:#c4c4c4;
+
+  font-size:14px;
+
+  line-height:1.42;
+
+  font-weight:400;
+
+  letter-spacing:-.01em;
+}
+
+.footer-column p{
+  margin-bottom:3px;
+}
+
+.footer-column a{
+  text-decoration:none;
+}
+
+.footer-column a:hover{
+  color:#fff;
+}
+
+
+/* Nessun logo nel footer */
+
+.footer-logos{
+  display:none;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width:900px){
+
+  header{
+    min-height:70px;
+    height:70px;
+  }
+
+  .menu-item{
+    height:70px;
+  }
+
+  .hero{
+    min-height:calc(100vh - 70px);
+    padding:60px 30px;
+  }
+
+  .chi-siamo{
+    width:min(calc(100% - 40px),680px);
+    padding:80px 0 75px;
+    grid-template-columns:1fr;
+  }
+
+  .chi-testo p{
+    font-size:19px;
+  }
+
+  .chi-foto{
+    height:58vw;
+    min-height:320px;
+    margin-top:50px;
+  }
+
+  .chi-slogan{
+    margin-top:75px;
+  }
+
+  .offerte-title{
+    margin-top:85px;
+  }
+
+  .lavorazioni{
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+
+  .lavorazione-card{
+    min-height:335px;
+    padding:12px 14px 20px;
+  }
+
+
+  /* FOOTER TABLET */
+
+  .footer{
+    padding:25px 30px;
+    min-height:155px;
+  }
+
+  .footer-inner{
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+
+  .footer h3{
+    height:24px;
+    font-size:18px;
+    line-height:24px;
+    margin-bottom:8px;
+  }
+
+  .footer-column,
+  .footer-column p,
+  .footer-column a{
+    font-size:13px;
+    line-height:1.4;
+  }
+
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width:600px){
+
+  header{
+    height:70px;
+    min-height:70px;
+    padding:0 18px;
+  }
+
+  .brand-logos{
+    gap:8px;
+    height:50px;
+  }
+
+  .brand-logos img:first-child{
+    height:48px;
+    max-width:118px;
+  }
+
+  .brand-logos img:last-child{
+    height:43px;
+    max-width:100px;
+  }
+
+  nav{
+    display:none;
+  }
+
+  .hero{
+    min-height:calc(100vh - 70px);
+    padding:55px 20px;
+  }
+
+  .hero h1{
+    font-size:clamp(50px,15vw,76px);
+  }
+
+  .hero p{
+    font-size:17px;
+    margin-top:22px;
+  }
+
+  .chi-siamo{
+    width:calc(100% - 40px);
+    padding:70px 0 65px;
+  }
+
+  .chi-testo h2{
+    font-size:49px;
+  }
+
+  .chi-testo p{
+    font-size:17px;
+    line-height:1.8;
+  }
+
+  .chi-foto{
+    height:88vw;
+    min-height:300px;
+    margin-top:40px;
+  }
+
+  .chi-slogan{
+    margin-top:60px;
+    padding-top:24px;
+  }
+
+  .chi-slogan-text{
+    font-size:28px;
+  }
+
+  .offerte-title{
+    margin-top:70px;
+    margin-bottom:28px;
+    font-size:44px;
+  }
+
+  .lavorazioni{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .lavorazione-card{
+    min-height:0;
+    padding:11px 13px 16px;
+  }
+
+  .lavorazione-img{
+    width:69%;
+    aspect-ratio:1/1;
+    margin-bottom:15px;
+  }
+
+
+  /* ==================================================
+     FOOTER MOBILE
+  ================================================== */
+
+  .footer{
+    padding:27px 20px;
+    min-height:0;
+  }
+
+  .footer-inner{
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+
+  .footer-column{
+    width:100%;
+  }
+
+  .footer h3{
+    height:auto;
+    min-height:24px;
+    font-size:19px;
+    line-height:24px;
+    margin-bottom:8px;
+  }
+
+  .footer-column,
+  .footer-column p,
+  .footer-column a{
+    font-size:13px;
+    line-height:1.45;
+  }
+
+}
+
+
+/* ==================================================
+   RIDUZIONE ANIMAZIONI
+================================================== */
+
+@media (prefers-reduced-motion:reduce){
+
+  html{
+    scroll-behavior:auto;
+  }
+
+  *,
+  *::before,
+  *::after{
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
+         HEADER
+    ================================================== -->
+
+    <header>
+
+        <div class="brand-logos">
+
+            <img
+                src="Logo1.jpg"
+                alt="INCATEC SRL">
+
+            <img
+                src="Logo2.jpg"
+                alt="GH Saldature">
+
+        </div>
+
+
+        <nav>
+
+            <!-- HOME -->
+
+            <a href="./index.html">
+                Home
+            </a>
+
+
+            <!-- SERVIZI -->
+
+            <div class="menu-item">
+
+                <span class="menu-label">
+                    Servizi
+                </span>
+
+
+                <div class="dropdown">
+
+                    <a href="./montaggio.html">
+                        MONTAGGIO
+                    </a>
+
+                    <a href="./manodopera.html">
+                        PRESTAZIONE DI MANODOPERA
+                    </a>
+
+                    <a href="./intervento-tecnico.html">
+                        INTERVENTO TECNICO
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- LAVORAZIONI -->
+
+            <div class="menu-item">
+
+                <span class="menu-label">
+                    Lavorazioni
+                </span>
+
+
+                <div class="dropdown">
+
+                    <a href="./taglio-laser.html">
+                        TAGLIO LASER
+                    </a>
+
+                    <a href="./piegatura.html">
+                        PIEGATURA
+                    </a>
+
+                    <a href="./saldatura.html">
+                        SALDATURA
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTATTI -->
+
+            <a href="./contatti.html">
+                Contatti
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <main class="hero">
+
+        <div class="video-background">
+
+
+            <video
+                class="active"
+                autoplay
+                muted
+                playsinline>
+
+                <source
+                    src="video1.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <video
+                autoplay
+                muted
+                playsinline>
+
+                <source
+                    src="video2.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <video
+                autoplay
+                muted
+                playsinline>
+
+                <source
+                    src="video3.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <video
+                autoplay
+                muted
+                playsinline>
+
+                <source
+                    src="video4.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <video
+                autoplay
+                muted
+                playsinline>
+
+                <source
+                    src="video5.mp4"
+                    type="video/mp4">
+
+            </video>
+
+
+            <div class="video-overlay"></div>
+
+        </div>
+
+
+        <div class="hero-content">
+
+            <h1>
+                Lavorazioni di Metalmeccanica
+            </h1>
+
+            <p>
+                Tecnologia, Precisione e Affidabilità
+                al servizio delle imprese
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <!-- ==================================================
+         CHI SIAMO
+    ================================================== -->
+
+    <section
+        id="chi-siamo"
+        class="chi-siamo">
+
+
+        <div class="chi-testo">
+
+            <h2>
+                Chi Siamo
+            </h2>
+
+            <p>
+                Incatec S.r.l., in collaborazione con G.H. Saldature offre un servizio completo nel
+                settore metalmeccanico. Da una parte Incatec si occupa nella realizzazione di lavorazioni
+                metalliche conto terzi, mentre dall'altra G.H. Saldature fornisce manodopera altamente 
+                qualificata per attività di saldatura e carpenteria.
+                Da oltre 12 anni operiamo con professionalità, precisione e implementando soluzioni tecnologiche
+                innovative. Realizziamo ogni tipo di lavorazione di carpenteria metallica come saldatura, taglio laser
+                e piegatura di precisione; offrendo soluzioni personalizzate, qualità certificata e tempi di consegna
+                affidabili.
+            </p>
+
+        </div>
+
+
+        <div class="chi-destra">
+
+            <div class="chi-foto">
+
+                <img
+                    src="chi-siamo.jpg"
+                    alt="Lavorazione metalmeccanica">
+
+            </div>
+
+        </div>
+
+
+        <!-- SLOGAN -->
+
+        <div class="chi-slogan">
+
+            <div class="chi-slogan-text">
+
+                Da anni realizziamo
+                <strong>lavorazioni metalliche</strong>
+                con elevati standard qualitativi,
+                combinando
+                <span class="rosso-chiaro">tecnologia</span>,
+                <strong>esperienza</strong>
+                e attenzione ai dettagli.
+
+            </div>
+
+
+            <div class="chi-slogan-line"></div>
+
+        </div>
+
+
+        <!-- TITOLO -->
+
+        <h2 class="offerte-title">
+            COSA OFFRIAMO
+        </h2>
+
+
+        <!-- ==================================================
+             CASELLE
+        ================================================== -->
+
+        <div class="lavorazioni">
+
+
+            <!-- TAGLIO LASER -->
+
+            <a
+                href="./taglio-laser.html"
+                class="lavorazione-link">
+
+                <div class="lavorazione-card">
+
+                    <div class="lavorazione-img">
+
+                        <img
+                            src="serviziolaser.jpg"
+                            alt="Taglio Laser">
+
+                    </div>
+
+
+                    <h3>
+                        TAGLIO LASER
+                    </h3>
+
+
+                    <p>
+                        Tecnologia avanzata per tagli precisi,
+                        finiture perfette e massima efficienza.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <!-- PIEGATURA -->
+
+            <a
+                href="./piegatura.html"
+                class="lavorazione-link">
+
+                <div class="lavorazione-card">
+
+                    <div class="lavorazione-img">
+
+                        <img
+                            src="serviziopiegatura.jpg"
+                            alt="Piegatura CNC">
+
+                    </div>
+
+
+                    <h3>
+                        PIEGATURA CNC
+                    </h3>
+
+
+                    <p>
+                        Piegatura di precisione su lamiere
+                        con tecnologia CNC.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <!-- SALDATURA -->
+
+            <a
+                href="./saldatura.html"
+                class="lavorazione-link">
+
+                <div class="lavorazione-card">
+
+                    <div class="lavorazione-img">
+
+                        <img
+                            src="serviziosaldatura.jpg"
+                            alt="Saldatura">
+
+                    </div>
+
+
+                    <h3>
+                        SALDATURA
+                    </h3>
+
+
+                    <p>
+                        Giunzioni precise e di qualità.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <!-- MONTAGGIO -->
+
+            <a
+                href="./montaggio.html"
+                class="lavorazione-link">
+
+                <div class="lavorazione-card">
+
+                    <div class="lavorazione-img">
+
+                        <img
+                            src="serviziomontaggio.jpg"
+                            alt="Montaggio">
+
+                    </div>
+
+
+                    <h3>
+                        MONTAGGIO
+                    </h3>
+
+
+                    <p>
+                        Assemblaggio di strutture e componenti metallici.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <!-- PRESTAZIONE DI MANODOPERA -->
+
+            <a
+                href="./manodopera.html"
+                class="lavorazione-link">
+
+                <div class="lavorazione-card">
+
+                    <div class="lavorazione-img">
+
+                        <img
+                            src="serviziomanodopera.jpg"
+                            alt="Prestazione di Manodopera">
+
+                    </div>
+
+
+                    <h3>
+                        PRESTAZIONE DI MANODOPERA
+                    </h3>
+
+
+                    <p>
+                        Assemblaggio di strutture e componenti metallici.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <!-- INTERVENTO TECNICO -->
+
+            <a
+                href="./intervento-tecnico.html"
+                class="lavorazione-link">
+
+                <div class="lavorazione-card">
+
+                    <div class="lavorazione-img">
+
+                        <img
+                            src="serviziomanutenzione.jpg"
+                            alt="Intervento Tecnico">
+
+                    </div>
+
+
+                    <h3>
+                        INTERVENTO TECNICO
+                    </h3>
+
+
+                    <p>
+                        Manutenzione e riparazione.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         FOOTER CONTATTI
+    ================================================== -->
+
+    <footer
+        id="contatti"
+        class="footer">
+
+
+        <div class="footer-inner">
+
+
+            <!-- CONTATTACI -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Contattaci
+                </h3>
+
+                <p>
+                    RESPONSABILE LAVORI
+                </p>
+
+                <p>
+                    Cell. 3273639328
+                </p>
+
+                <p>
+                    e-mail:
+                    <a href="mailto:service_incatecsrl@outlook.it">
+                        service_incatecsrl@outlook.it
+                    </a>
+                </p>
+
+                <p>
+                    UFFICIO AMMINISTRAZIONE
+                </p>
+
+                <p>
+                    Cell. 02 39548389
+                </p>
+
+                <p>
+                    e-mail:
+                    <a href="mailto:incatec.srl@outlook.com">
+                        incatec.srl@outlook.com
+                    </a>
+                </p>
+
+            </div>
+
+
+            <!-- INDIRIZZI -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Indirizzi
+                </h3>
+
+                <p>
+                    Via Italo Calvino 7/B
+                    <br>
+                    Rho (MI)
+                </p>
+
+                <p>
+                    Località Rivazza 8
+                    <br>
+                    Borgo Priolo (PV)
+                </p>
+
+            </div>
+
+
+            <!-- DATI AZIENDALI -->
+
+            <div class="footer-column">
+
+                <h3>
+                    P.IVA
+                </h3>
+
+                <p>
+                    P.IVA INCATEC SRL:
+                    <br>
+                    12009360962
+                </p>
+
+                <p>
+                    P.IVA G.H. SALDATURE:
+                    <br>
+                    12646890967
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </footer>
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
+
+    <script>
+
+
+        /* =========================
+           VIDEO
+        ========================= */
+
+        const videos =
+            document.querySelectorAll(
+                ".video-background video"
+            );
+
+
+        let currentVideo = 0;
+
+
+        function playNextVideo(){
+
+            videos[currentVideo]
+                .classList
+                .remove("active");
+
+
+            currentVideo++;
+
+
+            if(
+                currentVideo >= videos.length
+            ){
+
+                currentVideo = 0;
+
+            }
+
+
+            videos[currentVideo]
+                .classList
+                .add("active");
+
+
+            videos[currentVideo]
+                .currentTime = 0;
+
+
+            videos[currentVideo]
+                .play();
+
+        }
+
+
+        videos.forEach(
+            (video,index) => {
+
+                video.addEventListener(
+                    "ended",
+                    function(){
+
+                        if(
+                            index === currentVideo
+                        ){
+
+                            playNextVideo();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        videos[0].play();
+
+
+
+        /* =========================
+           SCROLL HERO
+        ========================= */
+
+        const heroTitle =
+            document.querySelector(
+                ".hero h1"
+            );
+
+
+        const heroText =
+            document.querySelector(
+                ".hero p"
+            );
+
+
+        window.addEventListener(
+            "scroll",
+            function(){
+
+                const scrollY =
+                    window.scrollY;
+
+
+                const maxScroll = 400;
+
+
+                const progress =
+                    Math.min(
+                        scrollY / maxScroll,
+                        1
+                    );
+
+
+                const titleMove =
+                    progress * -70;
+
+
+                heroTitle.style.transform =
+                    `translateY(${titleMove}px)`;
+
+
+                const titleOpacity =
+                    1 - (progress * 0.25);
+
+
+                heroTitle.style.opacity =
+                    titleOpacity;
+
+
+                const textMove =
+                    progress * -40;
+
+
+                heroText.style.transform =
+                    `translateY(${textMove}px)`;
+
+
+                const textOpacity =
+                    1 - (progress * 0.55);
+
+
+                heroText.style.opacity =
+                    textOpacity;
+
+            }
+        );
+
+
+
+        /* =========================
+           ANIMAZIONI
+        ========================= */
+
+        const chiTesto =
+            document.querySelector(
+                ".chi-testo"
+            );
+
+
+        const chiFoto =
+            document.querySelector(
+                ".chi-foto"
+            );
+
+
+        const chiSlogan =
+            document.querySelector(
+                ".chi-slogan"
+            );
+
+
+        const lavorazioni =
+            document.querySelectorAll(
+                ".lavorazione-card"
+            );
+
+
+        const chiObserver =
+            new IntersectionObserver(
+
+                function(entries){
+
+                    entries.forEach(
+                        function(entry){
+
+                            if(
+                                entry.isIntersecting
+                            ){
+
+                                chiTesto
+                                    .classList
+                                    .add("visible");
+
+
+                                chiFoto
+                                    .classList
+                                    .add("visible");
+
+
+                                setTimeout(
+                                    function(){
+
+                                        chiSlogan
+                                            .classList
+                                            .add("visible");
+
+                                    },
+                                    350
+                                );
+
+
+                                setTimeout(
+                                    function(){
+
+                                        lavorazioni
+                                            .forEach(
+                                                function(card){
+
+                                                    card
+                                                        .classList
+                                                        .add("visible");
+
+                                                }
+                                            );
+
+                                    },
+                                    650
+                                );
+
+                            }
+
+                        }
+                    );
+
+                },
+
+                {
+                    threshold:0.15
+                }
+
+            );
+
+
+        chiObserver.observe(
+            document.querySelector(
+                "#chi-siamo"
+            )
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
